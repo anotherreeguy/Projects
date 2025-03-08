@@ -128,6 +128,15 @@
 </div>
 
 <script>
+    // Example getUserPreference function
+function getUserPreference() {
+    // Let's assume you have a select dropdown with id 'platformSelect'
+    const platformSelect = document.getElementById('platformSelect');
+    if (platformSelect) {
+        return platformSelect.value; // Get the selected value
+    }
+    return "Bedrock and Java"; // Fallback to "Both" if the element is not found
+}
     // Function to find and display a random server
     function findServer() {
         const loadingSpinner = document.getElementById("loadingSpinner");
