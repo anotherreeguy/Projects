@@ -168,99 +168,99 @@
     </style>
 </head>
 <body>
-    <script>
-        let currentEdition = "java";
 
-        // Toggle edition between Java and Bedrock
-        function toggleEdition() {
-            currentEdition = (currentEdition === "java") ? "bedrock" : "java";
-            document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
+<div class="container">
+    <h1>search minecraft skins</h1>
+    <button id="editionToggle" onclick="toggleEdition()">click this to change Minecraft version</button>
+    <input type="text" id="minecraftUsername" placeholder="username/gamertag" onkeypress="handleKeyPress(event)" />
+    <button onclick="fetchSkin()">search</button>
+    <p id="errorMessage" class="error"></p>
+    <div id="loadingSpinner" class="loading"></div>
+    <img id="skinPreview" class="skin-preview" alt="Skin Preview"/>
+    <p id="userDetails" class="user-info"></p>
+    <button id="downloadBtn" style="display: none;" onclick="downloadSkin()">Download Skin</button>
+</div>
+
+<script>
+    let currentEdition = "java";
+
+    // Toggle edition between Java and Bedrock
+    function toggleEdition() {
+        currentEdition = (currentEdition === "java") ? "bedrock" : "java";
+        document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
+    }
+
+    // Handle enter key press
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            fetchSkin();
         }
+    }
 
-        // Handle enter key press
-        function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                fetchSkin();
-            }
+    // Fetch skin from API
+    async function fetchSkin() {
+        const inputValue = document.getElementById("minecraftUsername").value.trim();
+        if (!inputValue) {
+            document.getElementById("errorMessage").textContent = "Please enter a valid username!";
+            return;
         }
+        document.getElementById("loadingSpinner").style.display = "block";
 
-        // Fetch skin from API
-        async function fetchSkin() {
-            const inputValue = document.getElementById("minecraftUsername").value.trim();
-            if (!inputValue) {
-                document.getElementById("errorMessage").textContent = "user doesn't exist";
-                return;
-            }
-            document.getElementById("loadingSpinner").style.display = "block";
+        try {
+            let skinUrl = '', userId = '', description = '';
 
-            try {
-                let skinUrl = '', downloadUrl = '', userId = '', description = '';
-
-                if (currentEdition === "java") {
-                    const response = await fetch(`https://api.ashcon.app/mojang/v2/user/${inputValue}`);
-                    const data = await response.json();
-                    if (data.error) {
-                        skinUrl = `https://mc-heads.net/avatar/${inputValue}`;
-                        downloadUrl = `https://mc-heads.net/download/${inputValue}`;
-                        userId = inputValue;
-                    } else {
-                        skinUrl = `https://textures.minecraft.net/texture/${data.textures.skin.url.split('/').pop()}`;
-                        downloadUrl = `https://mc-heads.net/download/${data.uuid}`;
-                        userId = data.uuid;
-                    }
+            if (currentEdition === "java") {
+                const response = await fetch(`https://api.ashcon.app/mojang/v2/user/${inputValue}`);
+                const data = await response.json();
+                if (data.error) {
+                    skinUrl = `https://mc-heads.net/avatar/${inputValue}`;
+                    userId = inputValue;
+                    description = descriptions[userId] || "No description available.";
                 } else {
-                    const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
-                    const xuidData = await xuidResponse.json();
-                    if (xuidData.error) {
-                        skinUrl = `https://mc-heads.net/avatar/${inputValue}`;
-                        downloadUrl = `https://mc-heads.net/avatar/${inputValue}`;
-                        userId = inputValue;
-                    } else {
-                        const skinResponse = await fetch(`https://api.geysermc.org/v2/skin/${xuidData.xuid}`);
-                        const skinData = await skinResponse.json();
-                        skinUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
-                        downloadUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
-                        userId = xuidData.xuid;
-                    }
+                    userId = data.uuid;
+                    skinUrl = `https://mc-heads.net/player/${userId}`;
+                    description = descriptions[userId] || "No description available.";
                 }
-
-                document.getElementById("skinPreview").src = skinUrl;
-                document.getElementById("skinPreview").style.display = "block";
-                document.getElementById("downloadBtn").style.display = "inline-block";
-                document.getElementById("downloadBtn").setAttribute("data-url", downloadUrl);
-                document.getElementById("userDetails").innerHTML = `XUID/UUID: ${userId}<br>About Me: ${description}`;
-                document.getElementById("errorMessage").textContent = "";
-
-            } catch (error) {
-                document.getElementById("errorMessage").textContent = "Could not find the skin.";
-            } finally {
-                document.getElementById("loadingSpinner").style.display = "none";
+            } else {
+                const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
+                const xuidData = await xuidResponse.json();
+                if (xuidData.error) {
+                    skinUrl = `https://mc-heads.net/avatar/${inputValue}`;
+                    userId = inputValue;
+                    description = descriptions[userId] || "No description available.";
+                } else {
+                    const skinResponse = await fetch(`https://api.geysermc.org/v2/skin/${xuidData.xuid}`);
+                    const skinData = await skinResponse.json();
+                    skinUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
+                    userId = xuidData.xuid;
+                    description = descriptions[userId] || "No description available.";
+                }
             }
-        }
 
-        // Download the skin
-        function downloadSkin() {
-            const downloadUrl = document.getElementById("downloadBtn").getAttribute("data-url");
-            if (downloadUrl) {
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.download = `skin.png`;
-                link.click();
-            }
+            document.getElementById("skinPreview").src = skinUrl;
+            document.getElementById("skinPreview").style.display = "block";
+            document.getElementById("downloadBtn").style.display = "inline-block";
+            document.getElementById("userDetails").innerHTML = `XUID/UUID: ${userId}<br>About Me: ${description}`;
+            document.getElementById("errorMessage").textContent = "";
+
+        } catch (error) {
+            document.getElementById("errorMessage").textContent = "Could not find the skin.";
+        } finally {
+            document.getElementById("loadingSpinner").style.display = "none";
         }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1>search minecraft skins</h1>
-        <button id="editionToggle" onclick="toggleEdition()">click this to change minecraft version</button>
-        <input type="text" id="minecraftUsername" placeholder="username/gamertag" onkeypress="handleKeyPress(event)" />
-        <button onclick="fetchSkin()">search</button>
-        <p id="errorMessage" class="error"></p>
-        <div id="loadingSpinner" class="loading"></div>
-        <img id="skinPreview" class="skin-preview" alt="Skin Preview" />
-        <p id="userDetails" class="user-info"></p>
-        <button id="downloadBtn" style="display: none;" onclick="downloadSkin()">Download</button>
-    </div>
+    }
+
+    // Download the skin
+    function downloadSkin() {
+        const skinUrl = document.getElementById("skinPreview").src;
+        if (skinUrl) {
+            const link = document.createElement('a');
+            link.href = skinUrl;
+            link.download = `hi.png`;  // Download with a timestamped filename
+            link.click();
+        }
+    }
+</script>
+
 </body>
 </html>
