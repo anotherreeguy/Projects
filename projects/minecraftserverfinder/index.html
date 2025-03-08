@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="find a random minecraft server">
-    <meta name="keywords" content="mc, minecraft server finder, bad minecraft servers, good minecraft servers, minecraft server smp, minecraft server list, NameMC, Server Info, minecraft server list, qiqiqiqi1212121">
+    <meta name="description" content="Find a random Minecraft server">
+    <meta name="keywords" content="mc, minecraft server finder, minecraft servers, minecraft smp, NameMC, server list">
     <title>Random Minecraft Servers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="server-finder.js" defer></script> <!-- Importing the external JS -->
+    <script src="server-finder.js" defer></script> <!-- External JS -->
     <style>
         :root { 
             --primary-color: #4c4cff; 
-            --secondary-color: #6666ff; 
+            --button-hover-color: #6666ff;
             --background-color: #111;
             --container-bg: rgba(20, 20, 20, 0.9);
-            --border-color: #444;
-            --input-bg: #222;
             --text-color: #e0e0e0;
-            --button-hover-color: #6666ff;
         }
 
         body, html {
@@ -30,7 +27,6 @@
             align-items: center;
             background: var(--background-color);
             color: var(--text-color);
-            box-sizing: border-box;
         }
 
         .container {
@@ -41,21 +37,10 @@
             text-align: center;
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.8);
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
         h1 {
             font-size: 2rem;
-            margin-bottom: 20px;
-            color: var(--text-color);
-        }
-
-        p {
-            font-size: 1rem;
-            color: var(--text-color);
             margin-bottom: 20px;
         }
 
@@ -67,11 +52,10 @@
             margin: 10px 0;
             border-radius: 8px;
             border: none;
-            outline: none;
             background: var(--primary-color);
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s ease;
         }
 
         button:hover {
@@ -93,7 +77,6 @@
 
         .server-info {
             font-size: 1rem;
-            color: var(--text-color);
             margin-top: 20px;
             text-align: left;
         }
@@ -102,11 +85,6 @@
             font-size: 1.2rem;
             display: block;
             margin-bottom: 10px;
-        }
-
-        .error {
-            color: red;
-            font-size: 1rem;
         }
 
         @keyframes spin {
@@ -118,56 +96,14 @@
 <body>
 
 <div class="container">
-    <h1>Find a Minecraft Server</h1>
-    <p>Click "Find Server" to see a recommended server!</p>
+    <h1>search minecraft servers</h1>
+    <p>click this button to get a random server</p>
 
-    <button onclick="findServer()">Find Server</button>
+    <button id="findServerButton">search</button>
     <div id="loadingSpinner" class="loading"></div>
-    <p id="errorMessage" class="error"></p>
+    <p id="errorMessage" class="error" style="color: red;"></p>
     <div id="serverDetails" class="server-info"></div>
 </div>
-
-<script>
-    // Example getUserPreference function
-function getUserPreference() {
-    // Let's assume you have a select dropdown with id 'platformSelect'
-    const platformSelect = document.getElementById('platformSelect');
-    if (platformSelect) {
-        return platformSelect.value; // Get the selected value
-    }
-    return "Bedrock and Java"; // Fallback to "Both" if the element is not found
-}
-    // Function to find and display a random server
-    function findServer() {
-        const loadingSpinner = document.getElementById("loadingSpinner");
-        loadingSpinner.style.display = "block";  // Show loading spinner
-        const errorMessage = document.getElementById("errorMessage");
-        const serverDetails = document.getElementById("serverDetails");
-
-        // Fetch the servers from server-finder.js (this will be handled in the external file)
-        if (typeof servers !== 'undefined' && servers.length > 0) {
-            // Pick a random server from the array
-            const selectedServer = servers[Math.floor(Math.random() * servers.length)];
-
-            // Display the selected server's details
-            serverDetails.innerHTML = `
-                <center><strong>${selectedServer.name}</strong></center>
-                <center><p>${selectedServer.description}</p></center>
-                <p>IP Address: ${selectedServer.ip}</p>
-                <p>Platform: ${selectedServer.platform}</p>
-                <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" 
-                        src="https://namemc.com/server/${selectedServer.ip}/embed" 
-                        width="728" 
-                        height="90"></iframe>
-            `;
-        } else {
-            errorMessage.textContent = "Unable to load server list.";
-        }
-
-        // Hide the loading spinner
-        loadingSpinner.style.display = "none";
-    }
-</script>
 
 </body>
 </html>
