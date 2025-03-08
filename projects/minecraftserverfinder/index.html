@@ -136,83 +136,60 @@ const servers = [
     { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "A survival server with a focus on community and fun." }
 ];
 
-// Utility to get cookie by name
-function getCookie(name) {
-    let value = "; " + document.cookie;
-    let parts = value.split("; " + name + "=");
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
+// Utility to get user preferences (platform selector)
+function getUserPreference() {
+    return document.getElementById("platformSelector").value;
 }
 
-// Utility to set a cookie
-function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-        let date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
-// Track server interaction by user
+// Utility to track server interactions for this session using sessionStorage
 function trackServerInteraction(serverName) {
-    let interactions = JSON.parse(getCookie("serverInteractions") || "{}");
+    let interactions = JSON.parse(sessionStorage.getItem("serverInteractions") || "{}");
     interactions[serverName] = (interactions[serverName] || 0) + 1;
-    setCookie("serverInteractions", JSON.stringify(interactions), 7); // Store for 7 days
+    sessionStorage.setItem("serverInteractions", JSON.stringify(interactions));  // Ensure it's stringified
 }
 
-// Track user keyword preferences
-function trackUserPreferences(keywords) {
-    let preferences = JSON.parse(getCookie("userPreferences") || "{}");
-    keywords.forEach(keyword => {
-        preferences[keyword] = (preferences[keyword] || 0) + 1;
-    });
-    setCookie("userPreferences", JSON.stringify(preferences), 7); // Store for 7 days
-}
-
-// Find and recommend a server based on user interaction and keyword preference
+// Function to find and display a random server based on user preference and past interactions
 function findServer() {
     const loadingSpinner = document.getElementById("loadingSpinner");
     loadingSpinner.style.display = "block";  // Show loading spinner
     const errorMessage = document.getElementById("errorMessage");
     const serverDetails = document.getElementById("serverDetails");
 
-    // Step 1: Consider all servers (Java, Bedrock, and both)
-    let availableServers = servers;
+    // Get selected platform
+    const userPreference = getUserPreference();
 
-    // Step 2: Consider user preferences for keywords (like SMP, mini-games, etc.)
-    let preferences = JSON.parse(getCookie("userPreferences") || "{}");
-
-    // Add preference score to servers based on keyword matching
-    availableServers.forEach(server => {
-        let score = 0;
-        // Check if the server description contains any of the user's preferred keywords
-        Object.keys(preferences).forEach(keyword => {
-            if (server.description.toLowerCase().includes(keyword.toLowerCase())) {
-                score += preferences[keyword];
-            }
-        });
-        server.preferenceScore = score;
+    // Step 1: Get all servers matching user platform (including "Both" servers)
+    let availableServers = servers.filter(server => {
+        return server.platform === userPreference || server.platform === "Bedrock and Java";
     });
 
-    // Step 3: Consider past interactions (using the interaction scores stored in cookies)
-    let interactions = JSON.parse(getCookie("serverInteractions") || {});
+    // Step 2: If no matching server, display an error
+    if (availableServers.length === 0) {
+        errorMessage.textContent = "No servers available for your selected platform!";
+        loadingSpinner.style.display = "none";
+        return;
+    }
+
+    // Step 3: Consider past interactions (track more interacted servers)
+    let interactions = JSON.parse(sessionStorage.getItem("serverInteractions") || "{}");
+
+    // Add interaction scores to servers
     availableServers.forEach(server => {
         server.interactionScore = interactions[server.name] || 0;
     });
 
-    // Step 4: Sort servers by interaction score and preference score (both descending)
-    availableServers.sort((a, b) => (b.interactionScore + b.preferenceScore) - (a.interactionScore + a.preferenceScore));
+    // Step 4: Sort the servers based on interaction score (descending)
+    availableServers.sort((a, b) => b.interactionScore - a.interactionScore);
 
-    // Step 5: Pick the most relevant server based on these scores
-    let selectedServer = availableServers[0];
+    // Step 5: Pick a random server from the weighted list (prefer more interacted servers)
+    let randomIndex = Math.floor(Math.random() * availableServers.length);
+    let selectedServer = availableServers[randomIndex];
 
     // Track the interaction with this server
     trackServerInteraction(selectedServer.name);
 
     // Step 6: Fetch NameMC stats (simulated here)
-    const serverStats = fetchServerStats(selectedServer.ip);
+    const serverStats = fetchServerStats(selectedServer.ip);  // Simulated fetch for NameMC stats
 
     // Step 7: Display the selected server's details
     serverDetails.innerHTML = `
@@ -225,25 +202,12 @@ function findServer() {
 
     errorMessage.textContent = "";
     loadingSpinner.style.display = "none";
-
-    // Step 8: Track user preferences based on server description
-    const keywords = ["smp", "minigames", "bedwars", "survival", "skyblock", "lifesteal", "survival", "funny", "Technical", "Mod"];
-    keywords.forEach(keyword => {
-        if (selectedServer.description.toLowerCase().includes(keyword)) {
-            trackUserPreferences([keyword]);
-        }
-    });
 }
 
-// Simulate fetching NameMC stats based on the server IP (In reality, you would fetch actual data)
+// Simulated function for fetching server stats (example purposes)
 function fetchServerStats(ip) {
-    // This is just a mock function. Replace with an actual API call to NameMC for real data.
-    return {
-        uuid: "1234-5678-91011",
-        description: "Player stats for the Minecraft server. More details can be fetched from NameMC."
-    };
+    console.log("Fetching stats for server: " + ip);
 }
 </script>
-
 </body>
 </html>
