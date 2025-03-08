@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="find a random minecraft server">
-    <meta name="keywords" content="mc, minecraft server finder, random mc server, random minecraft server, minecraft smp, server finder">
+    <meta name="keywords" content="mc, minecraft server finder, bad minecraft servers, good minecraft servers, minecraft server smp, minecraft server list, NameMC, Server Info, minecraft server list, qiqiqiqi1212121">
     <title>Random Minecraft Servers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="server-finder.js" defer></script>
+    <script src="server-finder.js" defer></script> <!-- Importing the external JS -->
     <style>
         :root { 
             --primary-color: #4c4cff; 
@@ -128,39 +128,36 @@
 </div>
 
 <script>
-// Predefined server data (without interactions)
-const servers = [
-    { name: "Hypixel", platform: "Java", ip: "hypixel.net", description: "The Hypixel Network is a Minecraft server containing a variety of minigames, including BedWars, SkyBlock, SMP, SkyWars, Murder Mystery, and more!" },
-    { name: "The Hive", platform: "Bedrock", ip: "geo.hivebedrock.network", description: "The Hive Minecraft server, featuring popular mini-games like BedWars, Hide and Seek, and more." },
-    { name: "SUNDAY GAMES", platform: "Java", ip: "173.240.154.7", description: "A fun Minecraft server with custom game modes and more!" },
-    { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "A survival server with a focus on community and fun." }
-];
+    // Function to find and display a random server
+    function findServer() {
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        loadingSpinner.style.display = "block";  // Show loading spinner
+        const errorMessage = document.getElementById("errorMessage");
+        const serverDetails = document.getElementById("serverDetails");
 
-// Function to find and display a random server
-function findServer() {
-    const loadingSpinner = document.getElementById("loadingSpinner");
-    loadingSpinner.style.display = "block";  // Show loading spinner
-    const errorMessage = document.getElementById("errorMessage");
-    const serverDetails = document.getElementById("serverDetails");
+        // Fetch the servers from server-finder.js (this will be handled in the external file)
+        if (typeof servers !== 'undefined' && servers.length > 0) {
+            // Pick a random server from the array
+            const selectedServer = servers[Math.floor(Math.random() * servers.length)];
 
-    // Step 1: Pick a random server from the array
-    const selectedServer = servers[Math.floor(Math.random() * servers.length)];
+            // Display the selected server's details
+            serverDetails.innerHTML = `
+                <center><strong>${selectedServer.name}</strong></center>
+                <center><p>${selectedServer.description}</p></center>
+                <p>IP Address: ${selectedServer.ip}</p>
+                <p>Platform: ${selectedServer.platform}</p>
+                <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" 
+                        src="https://namemc.com/server/${selectedServer.ip}/embed" 
+                        width="728" 
+                        height="90"></iframe>
+            `;
+        } else {
+            errorMessage.textContent = "Unable to load server list.";
+        }
 
-    // Step 2: Display the selected server's details
-    serverDetails.innerHTML = `
-        <center><strong>${selectedServer.name}</strong></center>
-        <center><p>${selectedServer.description}</p></center>
-        <p>IP Address: ${selectedServer.ip}</p>
-        <p>Platform: ${selectedServer.platform}</p>
-        <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" 
-                src="https://namemc.com/server/${selectedServer.ip}/embed" 
-                width="728" 
-                height="90"></iframe>
-    `;
-
-    // Hide the loading spinner
-    loadingSpinner.style.display = "none";
-}
+        // Hide the loading spinner
+        loadingSpinner.style.display = "none";
+    }
 </script>
 
 </body>
