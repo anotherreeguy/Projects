@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Minecraft server finder tool. Find and join random Minecraft servers easily.">
-    <meta name="keywords" content="Minecraft, Random Server Finder, Minecraft Server, Minecraft Java, Minecraft Bedrock, Minecraft Servers">
-    <meta name="author" content="Minecraft Server Finder">
-    <title>Random Minecraft Server Finder</title>
+    <meta name="description" content="Find random Minecraft servers!">
+    <meta name="keywords" content="mc, minecraft server finder, bad minecraft servers, good minecraft servers, minecraft server smp, minecraft server list, NameMC, Server Info">
+    <title>Find random Minecraft servers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="servers.js" defer></script> <!-- Link to external JS -->
+    <script src="server-finder.js" defer></script> <!-- External JS for server logic -->
     <style>
         :root { 
             --primary-color: #4c4cff; 
@@ -21,7 +20,6 @@
             --button-hover-color: #6666ff;
         }
 
-        /* Full Page Centering */
         body, html {
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -47,14 +45,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .container.show {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         h1 {
@@ -63,8 +53,13 @@
             color: var(--text-color);
         }
 
-        /* Input and Button Styles */
-        input, button {
+        p {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+
+        select, button {
             padding: 14px;
             font-size: 16px;
             width: 100%;
@@ -73,24 +68,17 @@
             border-radius: 8px;
             border: none;
             outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input {
-            background: var(--input-bg);
-            color: white;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        button {
             background: var(--primary-color);
             color: white;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s ease;
         }
 
-        button:hover {
+        select {
+            background: var(--input-bg);
+        }
+
+        button:hover, select:hover {
             background: var(--button-hover-color);
             transform: scale(1.05);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
@@ -107,47 +95,51 @@
             margin: 20px auto;
         }
 
+        .server-info {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .server-info strong {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
         .error {
             color: red;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-                width: 90%;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            input, button {
-                font-size: 14px;
-                padding: 12px;
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-<div class="container show">
-    <h1>Find a Random Minecraft Server</h1>
-    <p>Click the button below to be taken to a random Minecraft server!</p>
-    <button onclick="findRandomServer()">Find Random Server</button>
+<div class="container">
+    <h1>minecraft server searcher</h1>
+    <p>find random minecraft servers</p>
+
+    <button id="editionToggle" onclick="toggleEdition()">click this to change Minecraft version</button>
+
+    
+
+    <!-- Find Server Button -->
+    <button onclick="findServer()">Find Server</button>
+
+    <!-- Loading Spinner -->
     <div id="loadingSpinner" class="loading"></div>
-    <div id="serverDetails"></div>
+
+    <!-- Error Message -->
+    <p id="errorMessage" class="error"></p>
+
+    <!-- Server Info Display -->
+    <div id="serverDetails" class="server-info"></div>
 </div>
 
 </body>
