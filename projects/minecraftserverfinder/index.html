@@ -121,6 +121,14 @@
 <div class="container">
     <h1>Find a Minecraft Server</h1>
     <p>Click "Find Server" to see a recommended server!</p>
+    
+    <!-- Add platform selection dropdown -->
+    <select id="platformSelector">
+        <option value="Java">Java</option>
+        <option value="Bedrock">Bedrock</option>
+        <option value="Bedrock and Java">Both</option>
+    </select>
+
     <button onclick="findServer()">Find Server</button>
     <div id="loadingSpinner" class="loading"></div>
     <p id="errorMessage" class="error"></p>
@@ -128,7 +136,7 @@
 </div>
 
 <script>
-// Predefined server data (including support for both Java and Bedrock)
+// Declare the servers array only once
 const servers = [
     { name: "Hypixel", platform: "Java", ip: "hypixel.net", description: "The Hypixel Network is a Minecraft server containing a variety of minigames, including BedWars, SkyBlock, SMP, SkyWars, Murder Mystery, and more!" },
     { name: "The Hive", platform: "Bedrock", ip: "geo.hivebedrock.network", description: "The Hive Minecraft server, featuring popular mini-games like BedWars, Hide and Seek, and more." },
@@ -138,7 +146,12 @@ const servers = [
 
 // Utility to get user preferences (platform selector)
 function getUserPreference() {
-    return document.getElementById("platformSelector").value;
+    const platformSelector = document.getElementById("platformSelector");
+    if (!platformSelector) {
+        console.error("Platform selector element not found!");
+        return "Java"; // Default to Java if the selector is missing
+    }
+    return platformSelector.value;
 }
 
 // Utility to track server interactions for this session using sessionStorage
@@ -196,18 +209,22 @@ function findServer() {
         <center><strong>${selectedServer.name}</strong></center>
         <center><p>${selectedServer.description}</p></center>
         <p>IP Address: ${selectedServer.ip}</p>
-        <p>Platform/s: ${selectedServer.platform}</p>
-        <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" src="https://namemc.com/server/${selectedServer.ip}/embed" width="728" height="90"></iframe>
+        <p>Platform: ${selectedServer.platform}</p>
+        <p>Interactions: ${selectedServer.interactionScore}</p>
+        <p>Stats: ${serverStats}</p>
     `;
 
-    errorMessage.textContent = "";
+    // Hide the loading spinner
     loadingSpinner.style.display = "none";
 }
 
-// Simulated function for fetching server stats (example purposes)
+// Simulated function for fetching server stats (e.g., using NameMC API)
 function fetchServerStats(ip) {
-    console.log("Fetching stats for server: " + ip);
+    // This should be replaced with a real API fetch for server stats
+    return `Statistics for server at IP ${ip}`;
 }
+
 </script>
+
 </body>
 </html>
