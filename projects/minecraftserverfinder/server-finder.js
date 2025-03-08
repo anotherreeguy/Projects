@@ -24,6 +24,22 @@ const servers = [
     { name: "StratosCraft", platform: "Bedrock and Java", ip: "play.stratoscraft.net", description: "A community-driven survival world with plenty of features." }
 ];
 
+// Track how long the user stays on the server page
+let timeSpentOnPage = 0;
+let interval;
+
+// Function to track time spent on the server page
+function startTrackingTime() {
+    interval = setInterval(() => {
+        timeSpentOnPage++;
+    }, 1000); // Increment every second
+}
+
+// Stop tracking when the page is closed or user navigates away
+window.onbeforeunload = function() {
+    clearInterval(interval);  // Stop the tracking when the user leaves
+};
+
 // Function to track server interactions (using localStorage)
 function trackServerInteraction(serverName) {
     // Retrieve interactions from localStorage (ensure parsing correctly)
@@ -86,4 +102,19 @@ function findServer() {
 
     errorMessage.textContent = "";
     loadingSpinner.style.display = "none";
+
+    // Log time spent on the server page
+    console.log(`You have been on the page for ${timeSpentOnPage} seconds while viewing ${selectedServer.name}.`);
 }
+
+// Function to simulate fetching server stats (this can be replaced with a real fetch call)
+function fetchServerStats(ip) {
+    // Simulating server stats fetch (you can replace this with real API calls)
+    return {
+        playersOnline: Math.floor(Math.random() * 1000),
+        uptime: Math.floor(Math.random() * 100) + "%",
+    };
+}
+
+// Call the tracking function when the page loads
+startTrackingTime();
