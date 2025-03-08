@@ -6,16 +6,12 @@ const servers = [
     { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "asdfkasndf" }
 ];
 
-// Function to get user preference for platform
-function getUserPreference() {
-    return document.getElementById("platformSelector").value;
-}
-
 // Function to track server interactions (using localStorage)
 function trackServerInteraction(serverName) {
-    let interactions = JSON.parse(localStorage.getItem("serverInteractions")) || {};
+    // Retrieve interactions from localStorage (ensure parsing correctly)
+    let interactions = JSON.parse(localStorage.getItem("serverInteractions") || "{}");
     interactions[serverName] = (interactions[serverName] || 0) + 1;
-    localStorage.setItem("serverInteractions", JSON.stringify(interactions));
+    localStorage.setItem("serverInteractions", JSON.stringify(interactions));  // Ensure it's stringified
 }
 
 // Function to find and display a random server based on user preference and past interactions
@@ -41,7 +37,7 @@ function findServer() {
     }
 
     // Step 3: Consider past interactions (track more interacted servers)
-    let interactions = JSON.parse(localStorage.getItem("serverInteractions")) || {};
+    let interactions = JSON.parse(localStorage.getItem("serverInteractions") || "{}");
     
     // Add interaction scores to servers
     availableServers.forEach(server => {
@@ -72,13 +68,4 @@ function findServer() {
 
     errorMessage.textContent = "";
     loadingSpinner.style.display = "none";
-}
-
-// Simulate fetching NameMC stats based on the server IP (In reality, you would fetch actual data)
-function fetchServerStats(ip) {
-    // This is just a mock function. Replace with an actual API call to NameMC for real data.
-    return {
-        uuid: "1234-5678-91011",
-        description: "Player stats for the Minecraft server. More details can be fetched from NameMC."
-    };
 }
