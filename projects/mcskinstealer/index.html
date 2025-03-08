@@ -171,15 +171,15 @@
 
 <div class="container">
     <h1>search minecraft skins</h1>
-    <p>(for bedrock, you have to join a geyser server to see your stats)</p>
-    <button id="editionToggle" onclick="toggleEdition()">click this to change Minecraft version</button>
+    <p>join a geyser server to get your bedrock stats)</p>
+    <button id="editionToggle" onclick="toggleEdition()">click this to change minecraft version</button>
     <input type="text" id="minecraftUsername" placeholder="username/gamertag" onkeypress="handleKeyPress(event)" />
     <button onclick="fetchSkin()">search</button>
     <p id="errorMessage" class="error"></p>
     <div id="loadingSpinner" class="loading"></div>
     <img id="skinPreview" class="skin-preview" alt="Skin Preview" />
     <p id="userDetails" class="user-info"></p>
-    <button id="downloadBtn" style="display: none;" onclick="downloadSkin()">Download Skin</button>
+    <button id="downloadBtn" style="display: none;" onclick="downloadSkin()">Download</button>
 </div>
 
 <script>
@@ -202,7 +202,7 @@
     async function fetchSkin() {
         const inputValue = document.getElementById("minecraftUsername").value.trim();
         if (!inputValue) {
-            document.getElementById("errorMessage").textContent = "Please enter a valid username!";
+            document.getElementById("errorMessage").textContent = "user doesn't exist";
             return;
         }
         document.getElementById("loadingSpinner").style.display = "block";
@@ -218,9 +218,7 @@
                     userId = inputValue;
                     description = descriptions[userId] || "No description available.";
                 } else {
-                    userId = data.uuid;
-                    skinUrl = `https://mc-heads.net/player/${userId}`;
-                    description = descriptions[userId] || "No description available.";
+                    document.getElementById("errorMessage").textContent = "user doesn't exist";
                 }
             } else {
                 const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
