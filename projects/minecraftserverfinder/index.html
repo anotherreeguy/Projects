@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="find a random minecraft server">
-    <meta name="keywords" content="mc, minecraft server finder, random mc server, random miencraft server, random minecraft server, bad minecraft servers, good minecraft servers, minecraft smp, mc server, namemc server, minecraft, minecraft server, qazwsxedc1234, Server Finder, Java Server, Bedrock Server, NameMC, Server Info">
+    <meta name="keywords" content="mc, minecraft server finder, random mc server, random minecraft server, minecraft smp, server finder">
     <title>Random Minecraft Servers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="server-finder.js" defer></script> <!-- External JS for server logic -->
+    <script src="server-finder.js" defer></script>
     <style>
-        /* Styling similar to previous example */
         :root { 
             --primary-color: #4c4cff; 
             --secondary-color: #6666ff; 
@@ -120,7 +119,7 @@
 
 <div class="container">
     <h1>Find a Minecraft Server</h1>
-    <p>Click "Find Server" to see the most popular server!</p>
+    <p>Click "Find Server" to see a recommended server!</p>
 
     <button onclick="findServer()">Find Server</button>
     <div id="loadingSpinner" class="loading"></div>
@@ -129,7 +128,7 @@
 </div>
 
 <script>
-// Declare the servers array only once
+// Predefined server data (without interactions)
 const servers = [
     { name: "Hypixel", platform: "Java", ip: "hypixel.net", description: "The Hypixel Network is a Minecraft server containing a variety of minigames, including BedWars, SkyBlock, SMP, SkyWars, Murder Mystery, and more!" },
     { name: "The Hive", platform: "Bedrock", ip: "geo.hivebedrock.network", description: "The Hive Minecraft server, featuring popular mini-games like BedWars, Hide and Seek, and more." },
@@ -137,60 +136,31 @@ const servers = [
     { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "A survival server with a focus on community and fun." }
 ];
 
-// Utility to track server interactions for this session using sessionStorage
-function trackServerInteraction(serverName) {
-    let interactions = JSON.parse(sessionStorage.getItem("serverInteractions") || "{}");
-    interactions[serverName] = (interactions[serverName] || 0) + 1;
-    sessionStorage.setItem("serverInteractions", JSON.stringify(interactions));  // Ensure it's stringified
-}
-
-// Function to find and display the most interacted server
+// Function to find and display a random server
 function findServer() {
     const loadingSpinner = document.getElementById("loadingSpinner");
     loadingSpinner.style.display = "block";  // Show loading spinner
     const errorMessage = document.getElementById("errorMessage");
     const serverDetails = document.getElementById("serverDetails");
 
-    // Step 1: Get server interactions from sessionStorage
-    let interactions = JSON.parse(sessionStorage.getItem("serverInteractions") || "{}");
+    // Step 1: Pick a random server from the array
+    const selectedServer = servers[Math.floor(Math.random() * servers.length)];
 
-    // Step 2: Add interaction score to servers
-    servers.forEach(server => {
-        server.interactionScore = interactions[server.name] || 0;
-    });
-
-    // Step 3: Sort servers by interaction score (descending)
-    servers.sort((a, b) => b.interactionScore - a.interactionScore);
-
-    // Step 4: Pick the most interacted server (first one after sorting)
-    let selectedServer = servers[0];
-
-    // Track the interaction with this server
-    trackServerInteraction(selectedServer.name);
-
-    // Step 5: Fetch NameMC stats (simulated here)
-    const serverStats = fetchServerStats(selectedServer.ip);  // Simulated fetch for NameMC stats
-
-    // Step 6: Display the selected server's details
+    // Step 2: Display the selected server's details
     serverDetails.innerHTML = `
         <center><strong>${selectedServer.name}</strong></center>
         <center><p>${selectedServer.description}</p></center>
         <p>IP Address: ${selectedServer.ip}</p>
         <p>Platform: ${selectedServer.platform}</p>
-        <p>Interactions: ${selectedServer.interactionScore}</p>
-        <p>Stats: ${serverStats}</p>
+        <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" 
+                src="https://namemc.com/server/${selectedServer.ip}/embed" 
+                width="728" 
+                height="90"></iframe>
     `;
 
     // Hide the loading spinner
     loadingSpinner.style.display = "none";
 }
-
-// Simulated function for fetching server stats (e.g., using NameMC API)
-function fetchServerStats(ip) {
-    // This should be replaced with a real API fetch for server stats
-    return `Statistics for server at IP ${ip}`;
-}
-
 </script>
 
 </body>
