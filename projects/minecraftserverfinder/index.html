@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Find random Minecraft servers!">
-    <meta name="keywords" content="mc, minecraft server finder, bad minecraft servers, good minecraft servers, minecraft server smp, minecraft server list, NameMC, Server Info">
-    <title>Find random Minecraft servers</title>
+    <meta name="description" content="find a random minecraft server">
+    <meta name="keywords" content="mc, minecraft server finder, random mc server, random miencraft server, random minecraft server, bad minecraft servers, good minecraft servers, minecraft smp, mc server, namemc server, minecraft, minecraft server, qazwsxedc1234, Server Finder, Java Server, Bedrock Server, NameMC, Server Info">
+    <title>Random Minecraft Servers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="server-finder.js" defer></script> <!-- External JS for server logic -->
     <style>
+        /* Styling similar to previous example */
         :root { 
             --primary-color: #4c4cff; 
             --secondary-color: #6666ff; 
@@ -59,7 +60,7 @@
             margin-bottom: 20px;
         }
 
-        select, button {
+        button {
             padding: 14px;
             font-size: 16px;
             width: 100%;
@@ -74,11 +75,7 @@
             transition: all 0.3s ease;
         }
 
-        select {
-            background: var(--input-bg);
-        }
-
-        button:hover, select:hover {
+        button:hover {
             background: var(--button-hover-color);
             transform: scale(1.05);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
@@ -122,27 +119,131 @@
 <body>
 
 <div class="container">
-    <h1>minecraft server searcher</h1>
-    <p>find random minecraft servers</p>
-
-    <!-- Platform selection dropdown -->
-    <select id="platformSelector">
-        <option value="Java">Java Edition</option>
-        <option value="Bedrock">Bedrock Edition</option>
-    </select>
-
-    <!-- Find Server Button -->
+    <h1>Find a Minecraft Server</h1>
+    <p>Click "Find Server" to see a recommended server!</p>
     <button onclick="findServer()">Find Server</button>
-
-    <!-- Loading Spinner -->
     <div id="loadingSpinner" class="loading"></div>
-
-    <!-- Error Message -->
     <p id="errorMessage" class="error"></p>
-
-    <!-- Server Info Display -->
     <div id="serverDetails" class="server-info"></div>
 </div>
+
+<script>
+// Predefined server data (including support for both Java and Bedrock)
+const servers = [
+    { name: "Hypixel", platform: "Java", ip: "hypixel.net", description: "The Hypixel Network is a Minecraft server containing a variety of minigames, including BedWars, SkyBlock, SMP, SkyWars, Murder Mystery, and more!" },
+    { name: "The Hive", platform: "Bedrock", ip: "geo.hivebedrock.network", description: "The Hive Minecraft server, featuring popular mini-games like BedWars, Hide and Seek, and more." },
+    { name: "SUNDAY GAMES", platform: "Java", ip: "173.240.154.7", description: "A fun Minecraft server with custom game modes and more!" },
+    { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "A survival server with a focus on community and fun." }
+];
+
+// Utility to get cookie by name
+function getCookie(name) {
+    let value = "; " + document.cookie;
+    let parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+}
+
+// Utility to set a cookie
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+// Track server interaction by user
+function trackServerInteraction(serverName) {
+    let interactions = JSON.parse(getCookie("serverInteractions") || "{}");
+    interactions[serverName] = (interactions[serverName] || 0) + 1;
+    setCookie("serverInteractions", JSON.stringify(interactions), 7); // Store for 7 days
+}
+
+// Track user keyword preferences
+function trackUserPreferences(keywords) {
+    let preferences = JSON.parse(getCookie("userPreferences") || "{}");
+    keywords.forEach(keyword => {
+        preferences[keyword] = (preferences[keyword] || 0) + 1;
+    });
+    setCookie("userPreferences", JSON.stringify(preferences), 7); // Store for 7 days
+}
+
+// Find and recommend a server based on user interaction and keyword preference
+function findServer() {
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    loadingSpinner.style.display = "block";  // Show loading spinner
+    const errorMessage = document.getElementById("errorMessage");
+    const serverDetails = document.getElementById("serverDetails");
+
+    // Step 1: Consider all servers (Java, Bedrock, and both)
+    let availableServers = servers;
+
+    // Step 2: Consider user preferences for keywords (like SMP, mini-games, etc.)
+    let preferences = JSON.parse(getCookie("userPreferences") || "{}");
+
+    // Add preference score to servers based on keyword matching
+    availableServers.forEach(server => {
+        let score = 0;
+        // Check if the server description contains any of the user's preferred keywords
+        Object.keys(preferences).forEach(keyword => {
+            if (server.description.toLowerCase().includes(keyword.toLowerCase())) {
+                score += preferences[keyword];
+            }
+        });
+        server.preferenceScore = score;
+    });
+
+    // Step 3: Consider past interactions (using the interaction scores stored in cookies)
+    let interactions = JSON.parse(getCookie("serverInteractions") || {});
+    availableServers.forEach(server => {
+        server.interactionScore = interactions[server.name] || 0;
+    });
+
+    // Step 4: Sort servers by interaction score and preference score (both descending)
+    availableServers.sort((a, b) => (b.interactionScore + b.preferenceScore) - (a.interactionScore + a.preferenceScore));
+
+    // Step 5: Pick the most relevant server based on these scores
+    let selectedServer = availableServers[0];
+
+    // Track the interaction with this server
+    trackServerInteraction(selectedServer.name);
+
+    // Step 6: Fetch NameMC stats (simulated here)
+    const serverStats = fetchServerStats(selectedServer.ip);
+
+    // Step 7: Display the selected server's details
+    serverDetails.innerHTML = `
+        <center><strong>${selectedServer.name}</strong></center>
+        <center><p>${selectedServer.description}</p></center>
+        <p>IP Address: ${selectedServer.ip}</p>
+        <p>Platform/s: ${selectedServer.platform}</p>
+        <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" src="https://namemc.com/server/${selectedServer.ip}/embed" width="728" height="90"></iframe>
+    `;
+
+    errorMessage.textContent = "";
+    loadingSpinner.style.display = "none";
+
+    // Step 8: Track user preferences based on server description
+    const keywords = ["smp", "minigames", "bedwars", "survival", "skyblock", "lifesteal", "survival", "funny", "Technical", "Mod"];
+    keywords.forEach(keyword => {
+        if (selectedServer.description.toLowerCase().includes(keyword)) {
+            trackUserPreferences([keyword]);
+        }
+    });
+}
+
+// Simulate fetching NameMC stats based on the server IP (In reality, you would fetch actual data)
+function fetchServerStats(ip) {
+    // This is just a mock function. Replace with an actual API call to NameMC for real data.
+    return {
+        uuid: "1234-5678-91011",
+        description: "Player stats for the Minecraft server. More details can be fetched from NameMC."
+    };
+}
+</script>
 
 </body>
 </html>
