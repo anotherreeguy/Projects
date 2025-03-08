@@ -218,7 +218,9 @@
                     userId = inputValue;
                     description = descriptions[userId] || "No description available.";
                 } else {
-                    document.getElementById("errorMessage").textContent = "user doesn't exist";
+                    skinUrl = `https://mc-heads.net/avatar/${inputValue}`;
+                    userId = inputValue;
+                    description = descriptions[userId] || "No description available.";
                 }
             } else {
                 const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
