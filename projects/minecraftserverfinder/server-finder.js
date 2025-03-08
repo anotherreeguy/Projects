@@ -6,13 +6,6 @@ const servers = [
     { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "asdfkasndf" }
 ];
 
-
-function toggleEdition() {
-    currentEdition = (currentEdition === "java") ? "bedrock" : "java";
-    document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
-}
-
-
 // Function to get user preference for platform
 function getUserPreference() {
     return document.getElementById("platformSelector").value;
