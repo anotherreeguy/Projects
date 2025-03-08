@@ -55,9 +55,6 @@ function findServer() {
     const errorMessage = document.getElementById("errorMessage");
     const serverDetails = document.getElementById("serverDetails");
 
-    // Get selected platform
-    const userPreference = getUserPreference();
-
     // Step 1: Get all servers matching user platform (including "Both" servers)
     let availableServers = servers.filter(server => {
         return server.platform === userPreference || server.platform === "Bedrock and Java";
