@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Quick website I made that lets you preview other Minecraft users skins (Bedrock and Java)">
-    <meta name="keywords" content="Minecraft, Minecraft Skins, Download Minecraft Skins, Minecraft Java, Minecraft Bedrock, Minecraft Skin Finder, mc skin stealer, skin stealer, Minecraft Skin Stealer">
-    <meta name="author" content="Search Bedrock and Java Skins">
-    <title>Minecraft Skin Finder</title>
+    <meta name="description" content="Minecraft server finder tool. Find and join random Minecraft servers easily.">
+    <meta name="keywords" content="Minecraft, Random Server Finder, Minecraft Server, Minecraft Java, Minecraft Bedrock, Minecraft Servers">
+    <meta name="author" content="Minecraft Server Finder">
+    <title>Random Minecraft Server Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="descriptions.js"></script> <!-- Link to descriptions.js -->
+    <script src="servers.js" defer></script> <!-- Link to external JS -->
     <style>
         :root { 
             --primary-color: #4c4cff; 
@@ -107,40 +107,9 @@
             margin: 20px auto;
         }
 
-        .skin-preview {
-            margin-top: 20px;
-            display: none;
-            border-radius: 10px;
-            image-rendering: pixelated;
-            max-width: 100%;
-            max-height: 300px;
-        }
-
         .error {
             color: red;
             font-size: 0.9rem;
-        }
-
-        .user-info {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #bbbbbb;
-        }
-
-        .credits {
-            font-size: 0.9rem;
-            color: #cccccc;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .credits a {
-            color: var(--text-color);
-            text-decoration: none;
-        }
-
-        .credits a:hover {
-            text-decoration: underline;
         }
 
         @keyframes spin {
@@ -168,107 +137,18 @@
                 font-size: 14px;
                 padding: 12px;
             }
-
-            .skin-preview {
-                max-height: 200px;
-            }
         }
     </style>
 </head>
 <body>
 
 <div class="container show">
-    <h1>Search Minecraft Skins</h1>
-    <p>You need to join a Geyser server on Bedrock for info</p>
-    <button id="editionToggle" onclick="toggleEdition()">Click this to change Minecraft version</button>
-    <input type="text" id="minecraftUsername" placeholder="Username/Gamertag" onkeypress="handleKeyPress(event)" />
-    <button onclick="fetchSkin()">Search</button>
-    <p id="errorMessage" class="error"></p>
+    <h1>Find a Random Minecraft Server</h1>
+    <p>Click the button below to be taken to a random Minecraft server!</p>
+    <button onclick="findRandomServer()">Find Random Server</button>
     <div id="loadingSpinner" class="loading"></div>
-    <img id="skinPreview" class="skin-preview" alt="Skin Preview"/>
-    <p id="userDetails" class="user-info"></p>
-    <button id="downloadBtn" style="display: none;" onclick="downloadSkin()">Download Skin</button>
+    <div id="serverDetails"></div>
 </div>
-
-<script>
-    let currentEdition = "java";
-
-    // Toggle edition between Java and Bedrock
-    function toggleEdition() {
-        currentEdition = (currentEdition === "java") ? "bedrock" : "java";
-        document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
-    }
-
-    // Handle enter key press
-    function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            fetchSkin();
-        }
-    }
-
-    // Fetch skin from API
-    async function fetchSkin() {
-        const inputValue = document.getElementById("minecraftUsername").value.trim();
-        if (!inputValue) {
-            document.getElementById("errorMessage").textContent = "Please enter a valid username!";
-            return;
-        }
-        document.getElementById("loadingSpinner").style.display = "block";
-
-        try {
-            let skinUrl = '', userId = '', description = '';
-            if (currentEdition === "java") {
-                const response = await fetch(`https://api.ashcon.app/mojang/v2/user/${inputValue}`);
-                const data = await response.json();
-                if (data.error) {
-                    skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
-                    userId = inputValue;
-                    description = descriptions[userId] || "No description available.";
-                } else {
-                    userId = data.uuid;
-                    skinUrl = `https://mc-heads.net/body/${userId}`;
-                    description = descriptions[userId] || "No description available.";
-                }
-            } else {
-                const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
-                const xuidData = await xuidResponse.json();
-                if (xuidData.error) {
-                    skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
-                    userId = inputValue;
-                    description = descriptions[userId] || "No description available.";
-                } else {
-                    const skinResponse = await fetch(`https://api.geysermc.org/v2/skin/${xuidData.xuid}`);
-                    const skinData = await skinResponse.json();
-                    skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
-                    userId = xuidData.xuid;
-                    description = descriptions[userId] || "No description available.";
-                }
-            }
-
-            document.getElementById("skinPreview").src = skinUrl;
-            document.getElementById("skinPreview").style.display = "block";
-            document.getElementById("downloadBtn").style.display = "inline-block";
-            document.getElementById("userDetails").innerHTML = `XUID/UUID: ${userId}<br>About Me: ${description}`;
-            document.getElementById("errorMessage").textContent = "";
-
-        } catch (error) {
-            document.getElementById("errorMessage").textContent = "Could not find the skin.";
-        } finally {
-            document.getElementById("loadingSpinner").style.display = "none";
-        }
-    }
-
-    // Download the skin
-    function downloadSkin() {
-        const skinUrl = document.getElementById("skinPreview").src;
-        if (skinUrl) {
-            const link = document.createElement('a');
-            link.href = skinUrl;
-            link.download = `hi.png`;  // Download with a timestamped filename
-            link.click();
-        }
-    }
-</script>
 
 </body>
 </html>
