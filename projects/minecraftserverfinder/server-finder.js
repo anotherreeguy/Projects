@@ -48,24 +48,40 @@ function trackServerInteraction(serverName) {
     localStorage.setItem("serverInteractions", JSON.stringify(interactions));  // Ensure it's stringified
 }
 
-// Function to find and display a random server based on user preference and past interactions
 function findServer() {
     const loadingSpinner = document.getElementById("loadingSpinner");
     loadingSpinner.style.display = "block";  // Show loading spinner
     const errorMessage = document.getElementById("errorMessage");
     const serverDetails = document.getElementById("serverDetails");
 
-    // Step 1: Get all servers matching user platform (including "Both" servers)
-    let availableServers = servers.filter(server => {
-        return server.platform === userPreference || server.platform === "Bedrock and Java";
-    });
+    // Select only servers that are either Java, Bedrock, or both (no filter needed)
+    let availableServers = servers;
 
-    // Step 2: If no matching server, display an error
+    // Step 2: If no servers are available, show an error
     if (availableServers.length === 0) {
-        errorMessage.textContent = "No servers available for your selected platform!";
+        errorMessage.textContent = "No servers available!";
         loadingSpinner.style.display = "none";
         return;
     }
+
+    // Step 3: Pick a random server
+    let selectedServer = availableServers[Math.floor(Math.random() * availableServers.length)];
+
+    // Step 4: Display the selected server's details
+    serverDetails.innerHTML = `
+        <center><strong>${selectedServer.name}</strong></center>
+        <center><p>${selectedServer.description}</p></center>
+        <p>IP Address: ${selectedServer.ip}</p>
+        <p>Platform: ${selectedServer.platform}</p>
+        <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" 
+                src="https://namemc.com/server/${selectedServer.ip}/embed" 
+                width="728" height="90"></iframe>
+    `;
+
+    errorMessage.textContent = "";
+    loadingSpinner.style.display = "none";
+}
+
 
     // Step 3: Consider past interactions (track more interacted servers)
     let interactions = JSON.parse(localStorage.getItem("serverInteractions") || "{}");
