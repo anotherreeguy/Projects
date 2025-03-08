@@ -6,20 +6,6 @@ const servers = [
     { name: "MineSuperior", ip: "play.minesuperior.com", platform: "Bedrock and Java", description: "Survival, SkyBlock & more!" },
 ];
 
-let timeSpent = 0, interval;
-
-function trackTime() {
-    interval = setInterval(() => timeSpent++, 1000);
-}
-
-window.onbeforeunload = () => clearInterval(interval);
-
-function trackInteraction(serverName) {
-    let interactions = JSON.parse(localStorage.getItem("serverInteractions") || "{}");
-    interactions[serverName] = (interactions[serverName] || 0) + 1;
-    localStorage.setItem("serverInteractions", JSON.stringify(interactions));
-}
-
 function findServer() {
     const loading = document.getElementById("loadingSpinner");
     const errorMsg = document.getElementById("errorMessage");
@@ -27,20 +13,8 @@ function findServer() {
 
     loading.style.display = "block";
 
-    let available = servers.filter(s => s.platform.includes(userPreference) || s.platform === "Bedrock and Java");
-
-    if (!available.length) {
-        errorMsg.textContent = "No servers available!";
-        loading.style.display = "none";
-        return;
-    }
-
-    let interactions = JSON.parse(localStorage.getItem("serverInteractions") || "{}");
-    available.forEach(s => s.interactionScore = interactions[s.name] || 0);
-    available.sort((a, b) => b.interactionScore - a.interactionScore);
-
-    let server = available[Math.floor(Math.random() * available.length)];
-    trackInteraction(server.name);
+    // Randomly select a server
+    let server = servers[Math.floor(Math.random() * servers.length)];
 
     details.innerHTML = `
         <center><strong>${server.name}</strong></center>
@@ -52,7 +26,6 @@ function findServer() {
     `;
 
     loading.style.display = "none";
-    console.log(`Time spent: ${timeSpent} sec on ${server.name}.`);
 }
 
-trackTime();
+findServer();
