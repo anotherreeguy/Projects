@@ -225,13 +225,13 @@
                 const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
                 const xuidData = await xuidResponse.json();
                 if (xuidData.error) {
-                    skinUrl = `https://mc-heads.net/avatar/${inputValue}`;
+                    skinUrl = `https://mc-heads.net/avatar/${skinData.texture_id}`;
                     userId = inputValue;
                     description = descriptions[userId] || "No description available.";
                 } else {
                     const skinResponse = await fetch(`https://api.geysermc.org/v2/skin/${xuidData.xuid}`);
                     const skinData = await skinResponse.json();
-                    skinUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
+                    skinUrl = `https://mc-heads.net/avatar/${skinData.texture_id}`;
                     userId = xuidData.xuid;
                     description = descriptions[userId] || "No description available.";
                 }
