@@ -120,14 +120,7 @@
 
 <div class="container">
     <h1>Find a Minecraft Server</h1>
-    <p>Click "Find Server" to see a recommended server!</p>
-    
-    <!-- Add platform selection dropdown -->
-    <select id="platformSelector">
-        <option value="Java">Java</option>
-        <option value="Bedrock">Bedrock</option>
-        <option value="Bedrock and Java">Both</option>
-    </select>
+    <p>Click "Find Server" to see the most popular server!</p>
 
     <button onclick="findServer()">Find Server</button>
     <div id="loadingSpinner" class="loading"></div>
@@ -144,16 +137,6 @@ const servers = [
     { name: "Survival 6", platform: "Bedrock and Java", ip: "server.dogcraft.net", description: "A survival server with a focus on community and fun." }
 ];
 
-// Utility to get user preferences (platform selector)
-function getUserPreference() {
-    const platformSelector = document.getElementById("platformSelector");
-    if (!platformSelector) {
-        console.error("Platform selector element not found!");
-        return "Java"; // Default to Java if the selector is missing
-    }
-    return platformSelector.value;
-}
-
 // Utility to track server interactions for this session using sessionStorage
 function trackServerInteraction(serverName) {
     let interactions = JSON.parse(sessionStorage.getItem("serverInteractions") || "{}");
@@ -161,50 +144,34 @@ function trackServerInteraction(serverName) {
     sessionStorage.setItem("serverInteractions", JSON.stringify(interactions));  // Ensure it's stringified
 }
 
-// Function to find and display a random server based on user preference and past interactions
+// Function to find and display the most interacted server
 function findServer() {
     const loadingSpinner = document.getElementById("loadingSpinner");
     loadingSpinner.style.display = "block";  // Show loading spinner
     const errorMessage = document.getElementById("errorMessage");
     const serverDetails = document.getElementById("serverDetails");
 
-    // Get selected platform
-    const userPreference = getUserPreference();
-
-    // Step 1: Get all servers matching user platform (including "Both" servers)
-    let availableServers = servers.filter(server => {
-        return server.platform === userPreference || server.platform === "Bedrock and Java";
-    });
-
-    // Step 2: If no matching server, display an error
-    if (availableServers.length === 0) {
-        errorMessage.textContent = "No servers available for your selected platform!";
-        loadingSpinner.style.display = "none";
-        return;
-    }
-
-    // Step 3: Consider past interactions (track more interacted servers)
+    // Step 1: Get server interactions from sessionStorage
     let interactions = JSON.parse(sessionStorage.getItem("serverInteractions") || "{}");
 
-    // Add interaction scores to servers
-    availableServers.forEach(server => {
+    // Step 2: Add interaction score to servers
+    servers.forEach(server => {
         server.interactionScore = interactions[server.name] || 0;
     });
 
-    // Step 4: Sort the servers based on interaction score (descending)
-    availableServers.sort((a, b) => b.interactionScore - a.interactionScore);
+    // Step 3: Sort servers by interaction score (descending)
+    servers.sort((a, b) => b.interactionScore - a.interactionScore);
 
-    // Step 5: Pick a random server from the weighted list (prefer more interacted servers)
-    let randomIndex = Math.floor(Math.random() * availableServers.length);
-    let selectedServer = availableServers[randomIndex];
+    // Step 4: Pick the most interacted server (first one after sorting)
+    let selectedServer = servers[0];
 
     // Track the interaction with this server
     trackServerInteraction(selectedServer.name);
 
-    // Step 6: Fetch NameMC stats (simulated here)
+    // Step 5: Fetch NameMC stats (simulated here)
     const serverStats = fetchServerStats(selectedServer.ip);  // Simulated fetch for NameMC stats
 
-    // Step 7: Display the selected server's details
+    // Step 6: Display the selected server's details
     serverDetails.innerHTML = `
         <center><strong>${selectedServer.name}</strong></center>
         <center><p>${selectedServer.description}</p></center>
