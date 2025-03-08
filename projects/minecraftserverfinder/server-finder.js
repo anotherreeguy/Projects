@@ -1,3 +1,4 @@
+// List of Minecraft servers
 const servers = [
     { name: "Hypixel", ip: "hypixel.net", platform: "Java", description: "Mini-games like Bed Wars & SkyBlock." },
     { name: "The Hive", ip: "geo.hivebedrock.network", platform: "Bedrock", description: "Mini-games like DeathRun & Hide and Seek." },
@@ -6,19 +7,28 @@ const servers = [
     { name: "MineSuperior", ip: "play.minesuperior.com", platform: "Bedrock and Java", description: "Survival, SkyBlock & more!" },
 ];
 
-// Show a random server
+// Function to find and display a random server
 function findServer() {
-    const server = servers[Math.floor(Math.random() * servers.length)];
+    document.getElementById("loadingSpinner").style.display = "block";  // Show loading spinner
+    document.getElementById("errorMessage").textContent = ""; // Clear error message
 
+    // Randomly select a server
+    const selectedServer = servers[Math.floor(Math.random() * servers.length)];
+
+    // Display the selected server details
     document.getElementById("serverDetails").innerHTML = `
-        <center><strong>${server.name}</strong></center>
-        <center><p>${server.description}</p></center>
-        <p>IP: ${server.ip}</p>
-        <p>Platform: ${server.platform}</p>
+        <center><strong>${selectedServer.name}</strong></center>
+        <center><p>${selectedServer.description}</p></center>
+        <p>IP Address: ${selectedServer.ip}</p>
+        <p>Platform: ${selectedServer.platform}</p>
         <iframe style="width:728px;height:90px;max-width:100%;border:none;display:block;margin:auto" 
-                src="https://namemc.com/server/${server.ip}/embed"></iframe>
+                src="https://namemc.com/server/${selectedServer.ip}/embed"></iframe>
     `;
+
+    document.getElementById("loadingSpinner").style.display = "none"; // Hide loading spinner
 }
 
-// Run when button is clicked
-document.getElementById("findServerButton").onclick = findServer;
+// Ensure the function runs when a button is clicked
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("findServerButton").onclick = findServer;
+});
