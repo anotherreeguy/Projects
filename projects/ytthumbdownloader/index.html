@@ -120,7 +120,7 @@
         const input = document.getElementById("videoId").value.trim();
         const videoId = extractVideoId(input);
         if (videoId.length !== 11) {
-            alert("either the video is too old, or doesn't exist");
+            alert("the video doesn't exist");
             return;
         }
         
