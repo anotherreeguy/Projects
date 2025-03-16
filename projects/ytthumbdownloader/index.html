@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Quick website I made lets you download Youtube thumbnails.">
+    <title>YouTube Thumbnail Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary-color: #4c4cff; 
+            --secondary-color: #6666ff; 
+            --background-color: #111;
+            --container-bg: rgba(20, 20, 20, 0.9);
+            --border-color: #444;
+            --input-bg: #222;
+            --text-color: #e0e0e0;
+            --button-hover-color: #6666ff;
+        }
+
+        body, html {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--background-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--container-bg);
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.8);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        input, button {
+            padding: 14px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 350px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input {
+            background: var(--input-bg);
+            color: white;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background: var(--button-hover-color);
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+        }
+
+        .thumbnail-preview {
+            margin-top: 20px;
+            display: none;
+            border-radius: 10px;
+            max-width: 100%;
+            max-height: 300px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>download youtube thumbnails</h1>
+    <input type="text" id="videoId" placeholder="Enter Youtube Link" onkeypress="handleKeyPress(event)" />
+    <button onclick="fetchThumbnail()">Get Thumbnail</button>
+    <img id="thumbnailPreview" class="thumbnail-preview" alt="YouTube Thumbnail" />
+    <button id="downloadBtn" style="display: none;" onclick="downloadThumbnail()">download</button>
+</div>
+
+<script>
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            fetchThumbnail();
+        }
+    }
+
+    function extractVideoId(url) {
+        const regex = /(?:youtube\.com\/.*v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : url;
+    }
+
+    function fetchThumbnail() {
+        const input = document.getElementById("videoId").value.trim();
+        const videoId = extractVideoId(input);
+        if (videoId.length !== 11) {
+            alert("either the video is too old, or doesn't exist");
+            return;
+        }
+        
+        const highResThumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        const fallbackThumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        
+        fetch(highResThumbnailUrl, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById("thumbnailPreview").src = highResThumbnailUrl;
+                } else {
+                    document.getElementById("thumbnailPreview").src = fallbackThumbnailUrl;
+                }
+                document.getElementById("thumbnailPreview").style.display = "block";
+                document.getElementById("downloadBtn").style.display = "inline-block";
+            })
+            .catch(() => {
+                document.getElementById("thumbnailPreview").src = fallbackThumbnailUrl;
+                document.getElementById("thumbnailPreview").style.display = "block";
+                document.getElementById("downloadBtn").style.display = "inline-block";
+            });
+    }
+
+    function downloadThumbnail() {
+        const img = document.getElementById("thumbnailPreview").src;
+        const link = document.createElement('a');
+        link.href = img;
+        link.download = "thumbnail.jpg";
+        link.click();
+    }
+</script>
+
+</body>
+</html>
