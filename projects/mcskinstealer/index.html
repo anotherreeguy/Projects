@@ -173,7 +173,6 @@
         }
     }
 
-    // Fetch skin from API
     async function fetchSkin() {
         const inputValue = document.getElementById("minecraftUsername").value.trim();
         if (!inputValue) {
@@ -229,8 +228,7 @@
         const skinUrl = document.getElementById("skinPreview").src;
         if (skinUrl) {
             const link = document.createElement('a');
-            link.href = 'mc-heads/skin/${skinData.texture_id}';
-            link.download = `image.png`;
+            link.href = 'https://mc-heads.net/skin/${skinData.texture_id}';
             link.click();
         }
     }
