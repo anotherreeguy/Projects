@@ -8,7 +8,7 @@
     <meta name="author" content="Search Bedrock and Java Skins">
     <title>Minecraft Skin Finder</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="descriptions.js"></script> <!-- Link to descriptions.js -->
+    <script src="descriptions.js"></script>
     <style>
         :root { 
             --primary-color: #4c4cff; 
@@ -20,8 +20,7 @@
             --text-color: #e0e0e0;
             --button-hover-color: #6666ff;
         }
-
-        /* Full Page Centering */
+        
         body, html {
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -55,7 +54,6 @@
             color: var(--text-color);
         }
 
-        /* Input and Button Styles */
         input, button {
             padding: 14px;
             font-size: 16px;
@@ -144,27 +142,6 @@
                 transform: rotate(360deg);
             }
         }
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-                width: 90%;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            input, button {
-                font-size: 14px;
-                padding: 12px;
-            }
-
-            .skin-preview {
-                max-height: 200px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -185,13 +162,11 @@
 <script>
     let currentEdition = "java";
 
-    // Toggle edition between Java and Bedrock
     function toggleEdition() {
         currentEdition = (currentEdition === "java") ? "bedrock" : "java";
         document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
     }
 
-    // Handle enter key press
     function handleKeyPress(event) {
         if (event.key === "Enter") {
             fetchSkin();
@@ -250,13 +225,12 @@
         }
     }
 
-    // Download the skin
     function downloadSkin() {
         const skinUrl = document.getElementById("skinPreview").src;
         if (skinUrl) {
             const link = document.createElement('a');
-            link.href = skinUrl;
-            link.download = `hi.png`;  // Download with a timestamped filename
+            link.href = 'mc-heads/skin/${skinData.texture_id}';
+            link.download = `image.png`;
             link.click();
         }
     }
