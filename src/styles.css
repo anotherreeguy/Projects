@@ -1,1 +1,71 @@
-*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Poppins',sans-serif;color:#ddd;background:#121212;text-align:center;padding:20px;margin:0;}.container{max-width:900px;margin:40px auto;padding:30px;background:#1c1c1c;border-radius:15px;box-shadow:0 0 20px rgba(0,0,0,0.4);}.hero{padding:100px 20px;background-color:#222;color:white;border-radius:15px 15px 0 0;box-shadow:0 5px 15px rgba(0,0,0,0.3);}.hero h1{font-size:3.5rem;font-weight:600;}p{font-size:1.5rem;font-weight:bold;color:#aaa;margin-bottom:20px;}.button-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-top:20px;}.btn{display:block;padding:0;background:none;color:white;text-decoration:none;border-radius:10px;font-size:1.1rem;text-align:center;font-weight:500;box-shadow:0 4px 8px rgba(0,0,0,0.3);transition:transform 0.3s ease,box-shadow 0.3s ease;overflow:hidden;}.btn:hover{transform:translateY(-3px);box-shadow:0 6px 12px rgba(0,0,0,0.4);}.btn img{display:block;width:100%;height:auto;border-radius:10px;}@media screen and (max-width:768px){.hero h1{font-size:2.5rem;}p{font-size:1.3rem;}}@media screen and (max-width:480px){.hero h1{font-size:2rem;}p{font-size:1.2rem;}.btn{font-size:1rem;padding:0;}}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Cal Sans', sans-serif;
+  color: #ddd;
+  background: #121212;
+  text-align: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.hero {
+  padding: 100px 20px;
+  color: white;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  font-weight: 600;
+}
+
+p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn {
+  display: block;
+  padding: 0;
+  background: none;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
