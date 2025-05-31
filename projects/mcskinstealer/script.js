@@ -74,6 +74,11 @@ function downloadSkin() {
     const skinUrl = document.getElementById("skinPreview").src;
     if (skinUrl && skinUrl.includes("/body/")) {
         const downloadUrl = skinUrl.replace("/body/", "/skin/");
-        window.open(downloadUrl, "_blank");
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = 'reeguyminecraftyskinthing.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 }
