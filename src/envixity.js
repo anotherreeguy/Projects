@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     let typedText = "";
-    const triggerWord = "envixity";
-    const imageSelector = 'img[src="src/Banner-1-thumbsmall.png"]';
+    const triggerWord = "envixityenvixityenvixity";
+    const imageSelector = 'img[src="src/banner-1-thumbsmall.png"]';
     const targetImage = document.querySelector(imageSelector);
     let activated = false;
 
