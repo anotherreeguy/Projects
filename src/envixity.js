@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typedText.length > triggerWord.length) {
             typedText = typedText.slice(-triggerWord.length);
         }
-
+        const targetImage = document.querySelector(imageSelector);
         if (typedText === triggerWord) {
             if (targetImage) {
                 targetImage.src = "src/Banner-1-thumbbig.png";
