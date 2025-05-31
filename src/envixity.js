@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (typedText === triggerWord) {
             if (targetImage) {
-                targetImage.src = "src/Banner-1-thumbbig.png";
+                targetImage.src = "src/banner-1-thumbbig.png";
             }
             const replaceTextContent = (node) => {
                 if (node.nodeType === Node.TEXT_NODE) {
