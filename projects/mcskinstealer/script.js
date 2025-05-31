@@ -25,25 +25,25 @@
                 const response = await fetch(`https://api.ashcon.app/mojang/v2/user/${inputValue}`);
                 const data = await response.json();
                 if (data.error) {
-                    skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
+                    skinUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
                     userId = inputValue;
                     description = descriptions[userId] || "No description available.";
                 } else {
                     userId = data.uuid;
-                    skinUrl = `https://mc-heads.net/body/${userId}`;
+                    skinUrl = `https://textures.minecraft.net/texture/${userId}`;
                     description = descriptions[userId] || "No description available.";
                 }
             } else {
                 const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
                 const xuidData = await xuidResponse.json();
                 if (xuidData.error) {
-                    skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
+                    skinUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
                     userId = inputValue;
                     description = descriptions[userId] || "No description available.";
                 } else {
                     const skinResponse = await fetch(`https://api.geysermc.org/v2/skin/${xuidData.xuid}`);
                     const skinData = await skinResponse.json();
-                    skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
+                    skinUrl = `https://textures.minecraft.net/texture/${skinData.texture_id}`;
                     userId = xuidData.xuid;
                     description = descriptions[userId] || "No description available.";
                 }
@@ -66,7 +66,7 @@
         const skinUrl = document.getElementById("skinPreview").src;
         if (skinUrl) {
             const link = document.createElement('a');
-            link.href = 'https://mc-heads.net/skin/${skinData.texture_id}';
+            link.href = 'https://textures.minecraft.net/texture/${skinData.texture_id}';
             link.click();
         }
     }
