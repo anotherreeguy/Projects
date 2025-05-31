@@ -1,4 +1,5 @@
 let currentEdition = "java";
+let textureId = "";  // Global to be used in download function
 
 function toggleEdition() {
     currentEdition = (currentEdition === "java") ? "bedrock" : "java";
@@ -34,6 +35,13 @@ async function fetchSkin() {
             }
 
             userId = data.uuid;
+
+            // Decode base64-encoded skin data
+            const b64 = data.textures.raw.value;
+            const decoded = JSON.parse(atob(b64));
+            const skinTextureUrl = decoded?.textures?.SKIN?.url;
+            textureId = skinTextureUrl.split('/').pop();  // extract hash
+
             skinUrl = `https://mc-heads.net/body/${userId}`;
             description = descriptions?.[userId] || "No description available.";
 
@@ -52,7 +60,8 @@ async function fetchSkin() {
                 throw new Error("No skin texture found for Bedrock user.");
             }
 
-            skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
+            textureId = skinData.texture_id;
+            skinUrl = `https://mc-heads.net/body/${textureId}`;
             userId = xuidData.xuid;
             description = descriptions?.[userId] || "No description available.";
         }
