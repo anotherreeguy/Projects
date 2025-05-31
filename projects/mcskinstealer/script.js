@@ -71,14 +71,13 @@ async function fetchSkin() {
 }
 
 function downloadSkin() {
-    const skinUrl = document.getElementById("skinPreview").src;
-    if (skinUrl && skinUrl.includes("/body/")) {
-        const downloadUrl = skinUrl.replace("/body/", "/skin/");
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = 'reeguyminecraftyskinthing.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+    if (!textureId) return;
+
+    const downloadUrl = `https://textures.minecraft.net/texture/${textureId}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = "minecraft_skin.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
