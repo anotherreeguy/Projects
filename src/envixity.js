@@ -1,13 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     let typedText = "";
-    const triggerWord = "envixityenvixityenvixity";
-    const imageSelector = 'img[src="src/banner-1-thumbsmall.png"]';
-    const targetImage = document.querySelector(imageSelector);
-    let activated = false;
+    const triggerWord = "envixity";
+    let triggered = false;
 
     document.addEventListener("keydown", (e) => {
-        if (activated) return;
-
+        if (triggered) return;
         typedText += e.key.toLowerCase();
         if (typedText.length > triggerWord.length) {
             typedText = typedText.slice(-triggerWord.length);
@@ -17,16 +14,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (targetImage) {
                 targetImage.src = "src/banner-1-thumbbig.png";
             }
-            const replaceTextContent = (node) => {
+            const replaceTextNodes = (node) => {
                 if (node.nodeType === Node.TEXT_NODE) {
                     node.textContent = node.textContent.replace(/ReeGuy/gi, "Envixity");
                 } else {
-                    node.childNodes.forEach(replaceTextContent);
+                    node.childNodes.forEach(replaceTextNodes);
                 }
             };
 
-            replaceTextContent(document.body);
-            activated = true;
+            replaceTextNodes(document.body);
         }
     });
 });
