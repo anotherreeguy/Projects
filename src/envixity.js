@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let typedText = "";
-    const triggerWord = "envixity";
+    const triggerWord = "envixityenvixityenvixity";
     let triggered = false;
 
     document.addEventListener("keydown", (e) => {
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (typedText === triggerWord) {
             if (targetImage) {
-                targetImage.src = "src/banner-1-thumbbig.png";
+                targetImage.src = "src/Banner-1-thumbbig.png";
             }
             const replaceTextNodes = (node) => {
                 if (node.nodeType === Node.TEXT_NODE) {
