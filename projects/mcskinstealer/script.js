@@ -82,5 +82,3 @@ function downloadSkin() {
         document.body.removeChild(link);
     }
 }
-
-# hi new feature real
