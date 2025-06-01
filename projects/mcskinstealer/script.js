@@ -1,84 +1,90 @@
 let currentEdition = "java";
 
-function toggleEdition() {
-    currentEdition = (currentEdition === "java") ? "bedrock" : "java";
-    document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("editionToggle").addEventListener("click", toggleEdition);
+  document.getElementById("searchBtn").addEventListener("click", fetchSkin);
+  document.getElementById("minecraftUsername").addEventListener("keypress", event => {
+    if (event.key === "Enter") fetchSkin();
+  });
+  document.getElementById("downloadBtn").addEventListener("click", downloadSkin);
+});
 
-function handleKeyPress(event) {
-    if (event.key === "Enter") {
-        fetchSkin();
-    }
+function toggleEdition() {
+  currentEdition = currentEdition === "java" ? "bedrock" : "java";
+  document.getElementById('editionToggle').textContent = `Currently: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
 }
 
 async function fetchSkin() {
-    const inputValue = document.getElementById("minecraftUsername").value.trim();
-    if (!inputValue) {
-        document.getElementById("errorMessage").textContent = "Please enter a valid username!";
-        return;
+  const username = document.getElementById("minecraftUsername").value.trim();
+  const errorEl = document.getElementById("errorMessage");
+  const preview = document.getElementById("skinPreview");
+  const spinner = document.getElementById("loadingSpinner");
+  const info = document.getElementById("userDetails");
+  const historyEl = document.getElementById("skinHistory");
+  const downloadBtn = document.getElementById("downloadBtn");
+
+  errorEl.textContent = "";
+  preview.style.display = "none";
+  downloadBtn.style.display = "none";
+  historyEl.innerHTML = "";
+  spinner.style.display = "block";
+
+  if (!username) {
+    errorEl.textContent = "Please enter a valid username.";
+    spinner.style.display = "none";
+    return;
+  }
+
+  try {
+    const editionParam = currentEdition === "java" ? "java" : "mcpe";
+    const res = await fetch(`https://divine-mudfish-radically.ngrok-free.app/${username}?edition=${editionParam}`);
+    const data = await res.json();
+
+    if (data.error) throw new Error(data.error);
+
+    const textureId = currentEdition === "java"
+      ? data.texture_url.split("/").pop()
+      : data.skinTextureId;
+
+    const skinUrl = `https://textures.minecraft.net/texture/${textureId}`;
+    preview.src = skinUrl;
+    preview.style.display = "block";
+    downloadBtn.style.display = "inline-block";
+
+    info.innerHTML = `
+      ID: ${data.id || data.xuid}<br>
+      Texture ID: ${textureId}<br>
+      Current user: ${username}
+    `;
+
+    const others = (data.users_with_this_skin || []).filter(name => name !== username);
+    if (others.length > 0) {
+      historyEl.innerHTML = "<p>Also used by:</p>";
+      for (const other of others) {
+        const thumb = document.createElement("img");
+        thumb.src = `https://minotar.net/armor/body/${other}/64`;
+        thumb.alt = other;
+        thumb.className = "skin-thumb";
+        thumb.title = other;
+        historyEl.appendChild(thumb);
+      }
     }
 
-    document.getElementById("loadingSpinner").style.display = "block";
-
-    try {
-        let skinUrl = '';
-        let userId = '';
-        let description = '';
-
-        if (currentEdition === "java") {
-            const response = await fetch(`https://api.ashcon.app/mojang/v2/user/${inputValue}`);
-            const data = await response.json();
-
-            if (data.error) {
-                throw new Error("Java Edition user not found.");
-            }
-
-            userId = data.uuid;
-            skinUrl = `https://mc-heads.net/body/${userId}`;
-            description = descriptions?.[userId] || "No description available.";
-
-        } else {
-            const xuidResponse = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${inputValue}`);
-            const xuidData = await xuidResponse.json();
-
-            if (xuidData.error) {
-                throw new Error("Bedrock Edition user not found.");
-            }
-
-            const skinResponse = await fetch(`https://api.geysermc.org/v2/skin/${xuidData.xuid}`);
-            const skinData = await skinResponse.json();
-
-            if (!skinData.texture_id) {
-                throw new Error("No skin texture found for Bedrock user.");
-            }
-
-            skinUrl = `https://mc-heads.net/body/${skinData.texture_id}`;
-            userId = xuidData.xuid;
-            description = descriptions?.[userId] || "No description available.";
-        }
-
-        document.getElementById("skinPreview").src = skinUrl;
-        document.getElementById("skinPreview").style.display = "block";
-        document.getElementById("downloadBtn").style.display = "inline-block";
-        document.getElementById("userDetails").innerHTML = `XUID/UUID: ${userId}<br>About Me: ${description}`;
-        document.getElementById("errorMessage").textContent = "";
-
-    } catch (error) {
-        document.getElementById("errorMessage").textContent = "Could not find the skin.";
-    } finally {
-        document.getElementById("loadingSpinner").style.display = "none";
-    }
+  } catch (err) {
+    errorEl.textContent = err.message || "Could not find the skin.";
+  } finally {
+    spinner.style.display = "none";
+  }
 }
 
 function downloadSkin() {
-    const skinUrl = document.getElementById("skinPreview").src;
-    if (skinUrl && skinUrl.includes("/body/")) {
-        const downloadUrl = skinUrl.replace("/body/", "/skin/");
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = 'reeguyminecraftyskinthing.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+  const skinUrl = document.getElementById("skinPreview").src;
+  if (skinUrl.includes("textures.minecraft.net/texture/")) {
+    const link = document.createElement('a');
+    link.href = skinUrl;
+    link.download = 'minecraft_skin.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 }
