@@ -128,7 +128,7 @@ async function openSkinUsersModal(textureId, skinName) {
   usersList.innerHTML = '<p>Loading users...</p>';
 
   try {
-    const apiUrl = `http://147.185.221.29:2607/skin/${encodeURIComponent(textureId)}`;
+    const apiUrl = `https://track-persons.gl.at.ply.gg:2607/skin/${encodeURIComponent(textureId)}`;
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error('Failed to fetch users.');
 
