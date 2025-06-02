@@ -1,0 +1,93 @@
+/* Background Gradient for Container or Page */
+body {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), /* Subtle gradient with lower opacity */
+              #666666; /* Softer fallback background color */
+  min-height: 100vh;  /* Ensure the gradient covers the whole viewport */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;  /* Centers content vertically and horizontally */
+}
+
+
+/* Base Box Button Style */
+.box-button {
+  position: relative;
+  cursor: pointer;
+  border: 4px solid #4e4e4e;
+  background-color: #444444;  /* Original background color */
+  padding: 0.5rem 1rem;
+  transition: 0.3s ease;
+  user-select: none;
+  font-size: 14px;
+  text-align: center;
+  color: white;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  min-height: 42px;
+  overflow: hidden;  /* Ensures the gradient doesn't overflow outside the button */
+}
+
+/* Hover Effect */
+.box-button:hover {
+  background-color: #363636;
+  border-color: #1b1b1b;
+}
+
+/* Active State */
+.box-button:active {
+  padding-bottom: 0;
+  margin-bottom: 5px;
+  transform: translateY(3px);
+  background-color: #5b21b6; /* Purple-800 */
+  border-color: #505050; /* Purple-900 */
+}
+
+/* Input Field */
+input#minecraftUsername {
+  height: 42px;
+  font-size: 14px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 2px solid #444;
+  background: #222;
+  color: white;
+  flex-grow: 1;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+input#minecraftUsername:focus {
+  border-color: #7c3aed;
+  background: #333;
+}
+
+/* Dark Mode Override */
+.dark .box-button {
+  background-color: #7c3aed; /* Purple-600 */
+  border-color: #5b21b6; /* Purple-700 */
+}
+
+.dark .box-button:hover {
+  background-color: #6d28d9;
+  border-color: #4c1d95;
+}
+
+.dark .box-button:active {
+  background-color: #5b21b6;
+  border-color: #3b0764;
+}
+
+/* Small Button */
+.small {
+  width: 1;
+  height: 1;
+}
+h2 {
+  font-size: 30px;
+  font-weight: 700;
+}
