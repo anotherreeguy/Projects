@@ -128,9 +128,12 @@ async function openSkinUsersModal(textureId, skinName) {
   usersList.innerHTML = '<p>Loading users...</p>';
 
   try {
-    const apiUrl = `https://track-persons.gl.at.ply.gg:2607/skin/${encodeURIComponent(textureId)}`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error('Failed to fetch users.');
+  const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/skin/${encodeURIComponent(textureId)}`;
+  const response = await fetch(apiUrl, {
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    }
+  });
 
     const data = await response.json();
     const users = currentEdition === "java" ? data.java_users : data.mcpe_users;
@@ -213,9 +216,12 @@ async function fetchSkin(usernameFromParam = null) {
   loadingSpinner.style.display = "block";
 
   try {
-    const apiUrl = `http://147.185.221.29:2607/${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error("Failed to fetch skin data.");
+    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
+  const response = await fetch(apiUrl, {
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    }
+  });
 
     const data = await response.json();
 
