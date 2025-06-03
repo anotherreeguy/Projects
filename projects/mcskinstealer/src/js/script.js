@@ -5,10 +5,10 @@ function handleKeyPress(e) {
 }
 function updateEditionButton() {
   const btn = document.getElementById('editionToggle'); // ENVIXITY ENVIXITY ENIVIXITY
-  btn.textContent = `Current Edition: ${currentEdition === 'mcpe' ? 'Java' : 'Bedrock'} Edition`;
+  btn.textContent = `Current Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
 }
 
-let currentEdition = "mcpe";
+let currentEdition = "java";
 let previousSkins = [];
 let modalOpen = false;
 function getAverageColor(img) {
@@ -166,7 +166,7 @@ async function openSkinUsersModal(textureId, skinName) {
 
 
 function toggleEdition() {
-  currentEdition = currentEdition === "mcpe" ? "mcpe" : "java";
+  currentEdition = currentEdition === "java" ? "mcpe" : "java";
   updateEditionButton();
 
   const params = new URLSearchParams(window.location.search);
