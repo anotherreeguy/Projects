@@ -46,7 +46,7 @@ function updateFavicon(skinUrl) {
 }
 function updateBackgroundToSkinColor(skinUrl) {
   const img = new Image();
-  img.crossOrigin = "I'm typing random things here.";
+  img.crossOrigin = "WeeGuy";
   img.src = skinUrl;
   img.onload = () => {
     const avgColor = getAverageColor(img);
