@@ -1,22 +1,22 @@
-function handleKeyPress(e) {
-  if (e.key === 'Enter') {
-    fetchSkin();
-  }
-}
+
+// Edition toggle button text update
 function updateEditionButton() {
-  const btn = document.getElementById('editionToggle'); // ENVIXITY ENVIXITY ENIVIXITY
+  const btn = document.getElementById('editionToggle');
   btn.textContent = `Current Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
 }
-
+// Globals
 let currentEdition = "java";
 let previousSkins = [];
 let modalOpen = false;
+
+// Utility: average skin color & darken
 function getAverageColor(img) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   ctx.drawImage(img, 0, 0);
+
   const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
   let r = 0, g = 0, b = 0, count = 0;
   for (let i = 0; i < data.length; i += 4) {
@@ -34,6 +34,7 @@ function getAverageColor(img) {
 function darkenColor({ r, g, b }, pct = 0.3) {
   return `rgb(${Math.floor(r * pct)}, ${Math.floor(g * pct)}, ${Math.floor(b * pct)})`;
 }
+
 function updateFavicon(skinUrl) {
   const faviconUrl = skinUrl.replace('/body/', '/avatar/');
   let link = document.querySelector("link[rel~='icon']");
@@ -44,9 +45,10 @@ function updateFavicon(skinUrl) {
   }
   link.href = faviconUrl;
 }
+
 function updateBackgroundToSkinColor(skinUrl) {
   const img = new Image();
-  img.crossOrigin = "WeeGuy";
+  img.crossOrigin = "weeguy";
   img.src = skinUrl;
   img.onload = () => {
     const avgColor = getAverageColor(img);
@@ -57,6 +59,7 @@ function updateBackgroundToSkinColor(skinUrl) {
   };
 }
 
+// Render previous skins with clickable heads
 function renderPreviousSkins() {
   const container = document.getElementById("previousSkins");
   if (!container) return;
@@ -67,11 +70,12 @@ function renderPreviousSkins() {
     div.classList.add("previous-skin-item");
     const headUrl = skin.skinUrl.replace('/body/', '/avatar/') + '/50';
     div.innerHTML = `
-      <img src="${headUrl}" alt="${skin.userId}'s skin class="previous-skin-img cursor-pointer" data-index="${idx}" />
+      <img src="${headUrl}" alt="Head of ${skin.userId}" class="previous-skin-img cursor-pointer" data-index="${idx}" />
     `;
     container.appendChild(div);
   });
 
+  // Add click event to heads
   container.querySelectorAll('.previous-skin-img').forEach(img => {
     img.addEventListener('click', e => {
       const index = e.target.dataset.index;
@@ -121,7 +125,7 @@ async function openSkinUsersModal(textureId, skinName) {
   modal.style.display = 'flex';
   document.getElementById('modalSkinName').textContent = skinName;
   const usersList = document.getElementById('skinUsersList');
-  usersList.innerHTML = '<p>Loading people who may of used this skin.</p>';
+  usersList.innerHTML = '<p>Loading users...</p>';
 
   try {
   const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/skin/${encodeURIComponent(textureId)}`;
@@ -135,13 +139,13 @@ async function openSkinUsersModal(textureId, skinName) {
     const users = currentEdition === "java" ? data.java_users : data.mcpe_users;
 
     if (!Array.isArray(users) || users.length === 0) {
-      usersList.innerHTML = '<p>No-one has used this skin.</p>';
+      usersList.innerHTML = '<p>No users found for this skin.</p>';
       return;
     }
 
     usersList.innerHTML = '';
     users.forEach(userId => {
-      const headUrl = `https://mc-heads.net/avatar/${textureId}`;
+      const headUrl = `https://mc-heads.net/avatar/${userId}`;
       const userDiv = document.createElement('div');
       userDiv.style.width = '120px';
       userDiv.style.textAlign = 'center';
@@ -151,7 +155,7 @@ async function openSkinUsersModal(textureId, skinName) {
       userDiv.style.backgroundColor = '#2d026f';
 
       userDiv.innerHTML = `
-        <img src="${headUrl}" alt="${userId}'s head style="width: 64px; height: 64px; margin-bottom: 0.25rem;" />
+        <img src="${headUrl}" alt="Head of ${userId}" style="width: 64px; height: 64px; margin-bottom: 0.25rem;" />
         <p style="font-weight: 600; margin: 0; word-break: break-word;">${userId}</p>
       `;
 
@@ -159,7 +163,7 @@ async function openSkinUsersModal(textureId, skinName) {
     });
 
   } catch (err) {
-    usersList.innerHTML = `<p style="color: #ff5555;">${err.message}</p>`;
+    usersList.innerHTML = `<p style="color: #ff5555;">Error loading users: ${err.message}</p>`;
   }
 }
 
@@ -177,6 +181,11 @@ function toggleEdition() {
 }
 
 
+function handleKeyPress(e) {
+  if (e.key === 'Enter') {
+    fetchSkin();
+  }
+}
 async function fetchSkin(usernameFromParam = null) {
   const usernameInput = document.getElementById('usernameInput');
   const errorMessage = document.getElementById('errorMessage');
@@ -190,13 +199,19 @@ async function fetchSkin(usernameFromParam = null) {
 
   const inputValue = usernameFromParam || usernameInput.value.trim();
   if (!inputValue) {
-    errorMessage.textContent = "User does not exist. (or may have never used Geyser)";
+    errorMessage.textContent = "Please enter a valid username!";
     return;
   }
+
+  // Update URL with username & edition
   const url = new URL(window.location);
   url.searchParams.set("username", inputValue);
   url.searchParams.set("edition", currentEdition);
   window.history.replaceState({}, '', url);
+
+  // (rest of fetchSkin stays the same...)
+
+
   errorMessage.textContent = "";
   loadingSpinner.style.display = "block";
 
@@ -233,18 +248,20 @@ async function fetchSkin(usernameFromParam = null) {
     userDetails.innerHTML = `<h2>${username}</h2> <p>${description}</p> ${userId}`;
     downloadBtn.style.display = "inline-block";
 
+    // Show main UI, hide initial search
     topbar.style.display = "flex";
     mainLayout.style.display = "flex";
     searchInitial.style.display = "none";
 
   } catch (err) {
-    errorMessage.textContent = `${usernameInput} does not exist. (or may have never used Geyser)`;
+    errorMessage.textContent = `Did you mean ${inputValue}?`;
   } finally {
     loadingSpinner.style.display = "none";
   }
 }
 
 
+// Init edition button on load
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const editionParam = params.get("edition");
@@ -268,7 +285,7 @@ function downloadSkin() {
   const downloadUrl = skinPreview.src.replace('/body/', '/download/');
   const link = document.createElement('a');
   link.href = downloadUrl;
-  link.download = 'thiswontwork.png';
+  link.download = 'minecraft_skin.png';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
