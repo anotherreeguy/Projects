@@ -2,7 +2,23 @@
 let currentEdition = "mcpe";
 let previousSkins = [];
 let modalOpen = false;
-faviconUrl = "https://mc-heads.net/avatar/ReeGuy_"
+// Loads skin
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const editionParam = params.get("edition");
+  const usernameParam = params.get("username");
+
+  if (editionParam && (editionParam === "java" || editionParam === "mcpe")) {
+    currentEdition = editionParam;
+  }
+
+  updateEditionButton();
+
+  if (usernameParam) {
+    document.getElementById("usernameInput").value = usernameParam;
+    fetchSkin(usernameParam);
+  }
+};
 // Updates te edition button.
 function updateEditionButton() {
   const btn = document.getElementById('editionToggle');
