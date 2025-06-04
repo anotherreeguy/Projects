@@ -1,22 +1,24 @@
-
-// Edition toggle button text update
-function updateEditionButton() {
-  const btn = document.getElementById('editionToggle');
-  btn.textContent = `Current Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
-}
-// Globals
-let currentEdition = "java";
+// Varibales for notation.
+let currentEdition = "mcpe";
 let previousSkins = [];
 let modalOpen = false;
-
-// Utility: average skin color & darken
+faviconUrl = "https://mc-heads.net/avatar/ReeGuy_"
+// Updates te edition button.
+function updateEditionButton() {
+  const btn = document.getElementById('editionToggle');
+  btn.textContent = `Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
+}
+// Checks if this is in "Dev mode" (i don't know why I added this.)
+function isDevMode() {
+  return document.cookie.split('; ').some(cookie => cookie.startsWith('dev='));
+}
+// Gets average color for background.
 function getAverageColor(img) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   ctx.drawImage(img, 0, 0);
-
   const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
   let r = 0, g = 0, b = 0, count = 0;
   for (let i = 0; i < data.length; i += 4) {
@@ -46,7 +48,7 @@ function updateFavicon(skinUrl) {
   link.href = faviconUrl;
 }
 
-function updateBackgroundToSkinColor(skinUrl) {
+function thisvariablenamecouldbebetter(skinUrl) {
   const img = new Image();
   img.crossOrigin = "weeguy";
   img.src = skinUrl;
@@ -139,7 +141,7 @@ async function openSkinUsersModal(textureId, skinName) {
     const users = currentEdition === "java" ? data.java_users : data.mcpe_users;
 
     if (!Array.isArray(users) || users.length === 0) {
-      usersList.innerHTML = '<p>No users found for this skin.</p>';
+      usersList.innerHTML = '<h4>No one else has used this skin, or used a similar skin.</h4>';
       return;
     }
 
@@ -202,16 +204,11 @@ async function fetchSkin(usernameFromParam = null) {
     errorMessage.textContent = "Please enter a valid username!";
     return;
   }
-
   // Update URL with username & edition
   const url = new URL(window.location);
   url.searchParams.set("username", inputValue);
   url.searchParams.set("edition", currentEdition);
   window.history.replaceState({}, '', url);
-
-  // (rest of fetchSkin stays the same...)
-
-
   errorMessage.textContent = "";
   loadingSpinner.style.display = "block";
 
@@ -235,7 +232,7 @@ async function fetchSkin(usernameFromParam = null) {
     const skinUrl = `https://mc-heads.net/body/${textureId}`;
 
     updateFavicon(skinUrl);
-    updateBackgroundToSkinColor(skinUrl);
+    thisvariablenamecouldbebetter(skinUrl);
 
     if (!previousSkins.length || previousSkins[previousSkins.length - 1].textureId !== textureId) {
       previousSkins.push({ textureId, skinUrl, username, description, userId });
