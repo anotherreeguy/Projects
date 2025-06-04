@@ -37,6 +37,10 @@ body {
   border-color: #1b1b1b;
 }
 
+.layout-main {
+  flex-grow: 1;
+}
+
 /* Active State */
 .box-button:active {
   padding-bottom: 0;
