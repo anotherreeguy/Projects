@@ -43,10 +43,11 @@
       />
     </div>
     <button onclick="fetchSkin()" class="box-button mt-4 w-full max-w-md">Search</button>
-    <button onclick="toggleEdition()" id="editionToggle" class="box-button">Change Editions</button>
-    <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
+    <div id="p-4">
+        <button onclick="toggleEdition()" id="editionToggle" class="box-button">Change Editions</button>
+        <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
+    </div>
   </div>
-
   <div id="mainLayout" class="hidden flex-wrap lg:flex-nowrap gap-10 px-6 py-10 w-full max-w-5xl flex justify-center items-start">
     <div class="flex justify-center w-full lg:w-auto">
       <img
@@ -60,14 +61,25 @@
       <div id="loadingSpinner" class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto hidden"></div>
       <div id="previousSkins" class="small"></div>
       <div id="previousSkins" class="small" style="font-size: 1px; padding: 1px;"></div>
-
-
-
-      <div><div></div></div>
       <button id="downloadBtn" onclick="downloadSkin()" class="hidden box-button bg-green-600 hover:bg-green-500 text-white">Download</button>
+      <footer id="splash-text", style="color: rgb(136, 140, 255)", style="font-weight: bold ">minceraft skin founder</footer>
+        <script>
+      const Splash = [
+        "'Nice skin you got there!' - Myself",
+        "guys theres a downwoad",
+        "Mining away, in this Minecraft day.",
+        "Creeper! Aw man!",
+        "Have any feedback for this website? Email contact@reeguy.com", 
+        "Huge thanks to Geyser!",
+        "Where did you find this website?"
+      ];
+
+      const splash = Splash[Math.floor(Math.random() * Splash.length)];
+      document.getElementById('splash-text').textContent = splash;
+  </script>
     </div>
   </div>
     <link rel="stylesheet" href="src/css/reebit.css" media="print" onload="this.media='all'">
-  <script src="src/js/script.js"></script>
+    <script src="src/js/script.js"></script>
 </body>
 </html>
