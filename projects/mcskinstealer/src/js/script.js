@@ -254,14 +254,14 @@ async function fetchSkin(usernameFromParam = null) {
     searchInitial.style.display = "none";
 
   } catch (err) {
-    errorMessage.textContent = `Did you mean ${inputValue}?`;
+    errorMessage.textContent = `Did you mean ${inputValue}?.`;
   } finally {
     loadingSpinner.style.display = "none";
   }
 }
 
 
-// Init edition button on load
+// Init edition button on loadmjghghv
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const editionParam = params.get("edition");
