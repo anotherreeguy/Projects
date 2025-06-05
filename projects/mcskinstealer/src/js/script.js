@@ -1,3 +1,41 @@
+// Sound setup
+const soundsPath = '../mcskinstealer/src/sound/'; // Adjust path as needed
+
+const sounds = {
+  click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
+  hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
+  error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
+  completeSearchOptions: [
+    new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
+    new Audio(`${soundsPath}se_ui_common_decide07.wav`)
+  ]
+};
+
+// Reusable audio control helpers
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play().catch(err => {
+    console.warn('Sound playback failed:', err);
+  });
+}
+
+function playClickSound() {
+  playSound(sounds.click);
+}
+
+function playHoverSound() {
+  playSound(sounds.hover);
+}
+
+function playErrorSound() {
+  playSound(sounds.error);
+}
+
+function playSearchCompleteSound() {
+  const sound = sounds.completeSearchOptions[Math.floor(Math.random() * sounds.completeSearchOptions.length)];
+  playSound(sound);
+}
+
 // Varibales for notation.
 let currentEdition = "mcpe";
 let previousSkins = [];
@@ -28,7 +66,7 @@ function updateEditionButton() {
 function isDevMode() {
   return document.cookie.split('; ').some(cookie => cookie.startsWith('dev='));
 }
-// Gets average color for background.
+// Gets average color for background. 
 function getAverageColor(img) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -48,6 +86,21 @@ function getAverageColor(img) {
   if (count === 0) return { r: 17, g: 17, b: 17 };
   return { r: Math.floor(r/count), g: Math.floor(g/count), b: Math.floor(b/count) };
 }
+let soundAllowed = true;
+
+document.body.addEventListener('click', () => {
+  soundAllowed = true;
+}, { once: true });
+
+const hoverSound = new Audio('src/sound/se_ui_common_select_showdetail.wav');
+
+document.querySelectorAll('button, .hover-sound').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    if (!soundAllowed) return;
+    hoverSound.currentTime = 0;
+    hoverSound.play().catch(() => {});
+  });
+});
 
 function darkenColor({ r, g, b }, pct = 0.3) {
   return `rgb(${Math.floor(r * pct)}, ${Math.floor(g * pct)}, ${Math.floor(b * pct)})`;
@@ -98,6 +151,7 @@ function renderPreviousSkins() {
     img.addEventListener('click', e => {
       const index = e.target.dataset.index;
       openSkinUsersModal(previousSkins[index].textureId, previousSkins[index].username);
+      playClickSound()
     });
   });
 }
@@ -189,6 +243,7 @@ async function openSkinUsersModal(textureId, skinName) {
 
 function toggleEdition() {
   currentEdition = currentEdition === "java" ? "mcpe" : "java";
+  playClickSound();
   updateEditionButton();
 
   const params = new URLSearchParams(window.location.search);
@@ -201,6 +256,7 @@ function toggleEdition() {
 
 function handleKeyPress(e) {
   if (e.key === 'Enter') {
+    playClickSound();
     fetchSkin();
   }
 }
@@ -214,12 +270,34 @@ async function fetchSkin(usernameFromParam = null) {
   const topbar = document.getElementById('topbar');
   const mainLayout = document.getElementById('mainLayout');
   const searchInitial = document.getElementById('searchInitial');
+  const technoAudio = new Audio('/projects/mcskinstealer/src/sound/techno.mp3');
+  technoAudio.volume = 0.8; // Optional: set volume
 
   const inputValue = usernameFromParam || usernameInput.value.trim();
-  if (!inputValue) {
+    if (!inputValue) {
     errorMessage.textContent = "Please enter a valid username!";
     return;
   }
+  if (inputValue.toLowerCase() === "technoblade") {
+    if (technoAudio.paused) {
+      technoAudio.currentTime = 0;
+      technoAudio.play().catch(err => {
+        console.warn("Autoplay blocked or failed:", err);
+      });
+    }
+  } else {
+    // Pause or stop techno audio if user searches for something else
+    if (!technoAudio.paused) {
+      technoAudio.pause();
+      technoAudio.currentTime = 0;
+    }
+  }
+  if (!inputValue) {
+    errorMessage.textContent = "Please enter a valid username!";
+    playErrorSound()
+    return;
+  }
+
   // Update URL with username & edition
   const url = new URL(window.location);
   url.searchParams.set("username", inputValue);
@@ -273,7 +351,10 @@ async function fetchSkin(usernameFromParam = null) {
   }
 }
 
-
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  playClickSound();
+  downloadSkin();
+});
 // Init edition button on loadmjghghv
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
