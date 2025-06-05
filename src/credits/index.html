@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minecraft Skin Finder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Montserrat', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#121212',
+            topbarbg: '#1f1f1f',
+            primary: '#4f46e5',
+            hover: '#3730a3',
+            inputBorder: '#444',
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="transition-colors duration-500 bg-darkbg text-white min-h-screen flex flex-col items-center">
+  <a href="/" class="absolute top-4 left-4">
+    <img src="../projects/mcskinfinder/src/img/logo.png" alt="ReeGuy Projects" class="h-12 w-auto">
+  </a>
+  <div id="topbar" class="re">
+  </div>
+  <div>
+    <div>    
+    <p style="text-align: center; font-weight: bold;">Huge thanks/credits to:</p>
+    <p style="text-align: center;">TailWind (for CSS library)</p>
+    <p style="text-align: center;">Nintendo (for music and button sounds, please no sue)</p>
+    <p style="text-align: center;">Ngrok (for "api" hosting).</p>
+    <p style="text-align: center;">EnvixityBO2 (for button ideas)</p>
+    <p style="text-align: center;">Thanks Craftatar and MCHeads! (For Minecraft skin renders)</p>
+    <p style="text-align: center;">Thanks Geyser for MCPE skin caching!</p>
+    <p style="text-align: center;">Thanks GitHub for GitHub Pages</p>
+    <p style="text-align: center;">Jetlovesgames for ideas</p>
+    <p style="text-align: center;">For Minecraft Skin finder assets</p> <script>// end</script>
+    <footer id="splash-text", style="font-weight: bold; text-align: center;">minceraft skin founder</footer>
+</div>
+  </div>
+  </div>
+        <script>
+      const Splash = [
+        "'Nice skin you got there!' - Myself",
+        "guys theres a downwoad",
+        "Mining away, in this Minecraft day.",
+        "Creeper! Aw man!",
+        "Have any feedback for this website? Email contact@reeguy.com", 
+        "Huge thanks to Geyser!",
+        "Where did you find this website?"
+      ];
+
+      const splash = Splash[Math.floor(Math.random() * Splash.length)];
+      document.getElementById('splash-text').textContent = splash;
+  </script>
+    </div>
+    
+  </div>
+    <link rel="stylesheet" href="../src/css/reebit.css" media="print" onload="this.media='all'">
+    <script src="src/js/script.js"></script>
+</body>
+</html>
