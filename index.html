@@ -1,84 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Minecraft Skin Finder</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'Montserrat', 'sans-serif'],
-          },
-          colors: {
-            darkbg: '#121212',
-            topbarbg: '#1f1f1f',
-            primary: '#4f46e5',
-            hover: '#3730a3',
-            inputBorder: '#444',
-          }
-        }
-      }
-    };
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Its where ReeGuy stores his terrible stuff!">
+    <meta name="keywords" content="Minecraft, Minecraft Skins, Download Minecraft Skins, Minecraft Java, Minecraft Bedrock, Minecraft Skin Finder, mc skin stealer, skin stealer, Minecraft Skin Stealer, bedrock skin downloader, how to download minecraft bedrock skins, skin, Minecraft Education skins, Minecraft Education Edition skins, Free Minecraft skins, Minecraft Skin stealer free, free, mc, Youtube download, Youtube to mp4, Youtube thumbnail, thumbnail downloader, Youtube, Youtube Thumbnail Downloader, youtube music, youtube kids, youtube shows, youtube video downloader, youtube premium, youtube studio, youtube movies, youtube playables, youtube app">
+    <title>ReeGuy's Projects Website</title>
+    <link rel="icon" href="src/branding/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-mq2GpSgJCUCw+Bc5j45n6GRKXY4t4tOrNS5I9TeTjBI8U1l2hU8MzgVwXdzX4Qb6" crossorigin="anonymous">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" as="style" type="text/css" crossorigin="anonymous">
+    <link rel="stylesheet" href="src/styles.css" media="print" onload="this.media='all'">
 </head>
-<body class="transition-colors duration-500 bg-darkbg text-white min-h-screen flex flex-col items-center">
-  <a href="/" class="absolute top-4 left-4">
-    <img src="src/img/logo.png" alt="ReeGuy Projects" class="h-12 w-auto">
-  </a>
-  <div id="topbar" class="re">
-  </div>
-  <div id="searchInitial" class="flex flex-col items-center justify-center flex-1 px-6 py-10 w-full max-w-md text-center">
-    <div class="flex gap-2 w-full max-w-md">
-      <input
-        id="usernameInput"
-        type="text"
-        placeholder="Enter acconut name!"
-        onkeypress="handleKeyPress(event)"
-        class="flex-grow p-4 rounded-lg bg-gray-800 border border-inputBorder text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "45f73f25de524572880a58a6c967ee64"}'></script>
+<body>
+    <div class="hero">
+        <h1>ReeGuy's Projects</h1>        
     </div>
-    <button onclick="fetchSkin()" class="box-button mt-4 w-full max-w-md">Search</button>
-    <div id="p-4">
-        <button onclick="toggleEdition()" id="editionToggle" class="box-button">Change Editions</button>
-        <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
+    <div class="container">
+        <p>random bad stuff i made</p>
+        <div class="button-grid">
+            <a href="projects/mcskinstealer/" class="btn">
+                <img src="src/Banner-1-thumbsmall.png" alt="Minecraft Skin finder, picture shows Minecraft terrain generation in the background with the text 'SKIN FINDER'!">
+            </a>
+            <a href="projects/ytthumbdownloader/" class="btn">
+                 <img src="src/Banner-2-thumbsmall.png" alt="Download youtube thumbnails, picture shows a MACOS cursor hovering on a Youtube thumbnail with the text saying 'DOWNLOAD THUMBNAILS'.">
+            </a>
+            <a href="projects/minecraftserverfinder" class="btn">
+                <img src="src/Banner-3-thumbsmall.png" alt="Random Minecraft Server Finder, text in picture just says 'random server finder'.">
+            </a>
+        </div>
     </div>
-  </div>
-  <div id="mainLayout" class="hidden flex-wrap lg:flex-nowrap gap-10 px-6 py-10 w-full max-w-5xl flex justify-center items-start">
-    <div class="flex justify-center w-full lg:w-auto">
-      <img
-        id="skinPreview"
-        src=""
-        alt="Skin Preview"
-      />
-    </div>
-    <div class="flex flex-col gap-4 w-full max-w-md">
-      <p id="userDetails" class="text-lg text-gray-300"></p>
-      <div id="loadingSpinner" class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto hidden"></div>
-      <div id="previousSkins" class="small"></div>
-      <div id="previousSkins" class="small" style="font-size: 1px; padding: 1px;"></div>
-      <button id="downloadBtn" onclick="downloadSkin()" class="hidden box-button bg-green-600 hover:bg-green-500 text-white">Download</button>
-      <footer id="splash-text", style="color: rgb(136, 140, 255)", style="font-weight: bold ">minceraft skin founder</footer>
-        <script>
-      const Splash = [
-        "'Nice skin you got there!' - Myself",
-        "guys theres a downwoad",
-        "Mining away, in this Minecraft day.",
-        "Creeper! Aw man!",
-        "Have any feedback for this website? Email contact@reeguy.com", 
-        "Huge thanks to Geyser!",
-        "Where did you find this website?"
-      ];
-      const splash = Splash[Math.floor(Math.random() * Splash.length)];
-      document.getElementById('splash-text').textContent = splash;
-  </script>
-    </div>
-  </div>
-    <link rel="stylesheet" href="src/css/reebit.css" media="print" onload="this.media='all'">
-    <script src="src/js/script.js"></script>
+<script src="src/envixity.js" defer></script>
 </body>
 </html>
