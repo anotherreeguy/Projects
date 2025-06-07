@@ -1,6 +1,22 @@
 let currentEdition = "mcpe";
 let previousSkins = [];
 let modalOpen = false;
+let makethiswebsitebetter = false
+
+function toggleSound(enable) {
+  makethiswebsitebetter = enable;
+  if (enable) {
+    document.body.addEventListener('click', () => {
+      Object.values(sounds).forEach(sound => {
+        if (Array.isArray(sound)) {
+          sound.forEach(s => s.play().catch(() => {}));
+        } else {
+          sound.play().catch(() => {});
+        }
+      });
+    }, { once: true });
+  }
+}
 
 const soundsPath = '../mcskinstealer/src/sound/';
 
@@ -8,6 +24,7 @@ const sounds = {
   click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
   hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
   error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
+  success: new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
   completeSearchOptions: [
     new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
     new Audio(`${soundsPath}se_ui_common_decide07.wav`)
@@ -15,12 +32,16 @@ const sounds = {
 };
 
 function playSound(sound) {
+  if (!makethiswebsitebetter) return;
   sound.currentTime = 0;
   sound.play().catch(err => {
     console.warn('Sound playback failed:', err);
   });
 }
 
+function playSuccessSound() {
+  playSound(sounds.success)
+}
 function playClickSound() {
   playSound(sounds.click);
 }
@@ -77,17 +98,16 @@ function getAverageColor(img) {
   if (count === 0) return { r: 17, g: 17, b: 17 };
   return { r: Math.floor(r/count), g: Math.floor(g/count), b: Math.floor(b/count) };
 }
-let soundAllowed = true;
 
 document.body.addEventListener('click', () => {
-  soundAllowed = true;
+  makethiswebsitebetter = false;
 }, { once: true });
 
 const hoverSound = new Audio('src/sound/se_ui_common_select_showdetail.wav');
 
 document.querySelectorAll('button, .hover-sound').forEach(el => {
   el.addEventListener('mouseenter', () => {
-    if (!soundAllowed) return;
+    if (!makethiswebsitebetter) return;
     hoverSound.currentTime = 0;
     hoverSound.play().catch(() => {});
   });
@@ -313,7 +333,7 @@ async function fetchSkin(usernameFromParam = null) {
       'ngrok-skip-browser-warning': 'true'
     }
   });
-
+  playSuccessSound()
     const data = await response.json();
 
     const textureId = data.texture_id;
