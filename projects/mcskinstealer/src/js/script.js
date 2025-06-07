@@ -361,7 +361,14 @@ async function fetchSkin(usernameFromParam = null) {
     topbar.style.display = "flex";
     mainLayout.style.display = "flex";
     searchInitial.style.display = "none";
-
+    let metaDesc = document.querySelector("meta[name='description']");
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = `${username}'s profile on Minecraft Skin Finder\n${description}`;
+    document.title = `${username} | ReeGuy's Projects`;
   } catch (err) {
     errorMessage.textContent = `User might not exist, or .`;
   } finally {
