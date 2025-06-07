@@ -1,5 +1,8 @@
-// Sound setup
-const soundsPath = '../mcskinstealer/src/sound/'; // Adjust path as needed
+let currentEdition = "mcpe";
+let previousSkins = [];
+let modalOpen = false;
+
+const soundsPath = '../mcskinstealer/src/sound/';
 
 const sounds = {
   click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
@@ -11,7 +14,6 @@ const sounds = {
   ]
 };
 
-// Reusable audio control helpers
 function playSound(sound) {
   sound.currentTime = 0;
   sound.play().catch(err => {
@@ -22,25 +24,17 @@ function playSound(sound) {
 function playClickSound() {
   playSound(sounds.click);
 }
-
 function playHoverSound() {
   playSound(sounds.hover);
 }
-
 function playErrorSound() {
   playSound(sounds.error);
 }
-
 function playSearchCompleteSound() {
   const sound = sounds.completeSearchOptions[Math.floor(Math.random() * sounds.completeSearchOptions.length)];
   playSound(sound);
 }
 
-// Varibales for notation.
-let currentEdition = "mcpe";
-let previousSkins = [];
-let modalOpen = false;
-// Loads skin
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const editionParam = params.get("edition");
@@ -57,16 +51,13 @@ window.onload = () => {
     fetchSkin(usernameParam);
   }
 };
-// Updates te edition button.
 function updateEditionButton() {
   const btn = document.getElementById('editionToggle');
   btn.textContent = `Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
 }
-// Checks if this is in "Dev mode" (i don't know why I added this.)
 function isDevMode() {
   return document.cookie.split('; ').some(cookie => cookie.startsWith('dev='));
-}
-// Gets average color for background. 
+} 
 function getAverageColor(img) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -130,7 +121,6 @@ function thisvariablenamecouldbebetter(skinUrl) {
   };
 }
 
-// Render previous skins with clickable heads
 function renderPreviousSkins() {
   const container = document.getElementById("previousSkins");
   if (!container) return;
@@ -146,7 +136,6 @@ function renderPreviousSkins() {
     container.appendChild(div);
   });
 
-  // Add click event to heads
   container.querySelectorAll('.previous-skin-img').forEach(img => {
     img.addEventListener('click', e => {
       const index = e.target.dataset.index;
@@ -271,13 +260,26 @@ async function fetchSkin(usernameFromParam = null) {
   const mainLayout = document.getElementById('mainLayout');
   const searchInitial = document.getElementById('searchInitial');
   const technoAudio = new Audio('/projects/mcskinstealer/src/sound/techno.mp3');
-  technoAudio.volume = 0.8; // Optional: set volume
-
+  const envixityAudio = new Audio('/projects/mcskinstealer/src/sound/creditstonintendo.mp3');
+  technoAudio.volume = 0.8;
+  envixityAudio.volume = 1;
   const inputValue = usernameFromParam || usernameInput.value.trim();
     if (!inputValue) {
     errorMessage.textContent = "Please enter a valid username!";
     return;
   }
+  if (inputValue.toLowerCase() === "envixitybo2") {
+    if (envixityAudio.paused) {
+      envixityAudio.currentTime = 0;
+      envixityAudio.play().catch(err => {
+        console.warn("Autoplay blocked or failed:", err);
+      });
+    }
+  } else {
+    if (!envixityAudio.paused) {
+      envixityAudio.pause();
+      envixityAudio.currentTime = 0;
+    };
   if (inputValue.toLowerCase() === "technoblade") {
     if (technoAudio.paused) {
       technoAudio.currentTime = 0;
@@ -286,7 +288,6 @@ async function fetchSkin(usernameFromParam = null) {
       });
     }
   } else {
-    // Pause or stop techno audio if user searches for something else
     if (!technoAudio.paused) {
       technoAudio.pause();
       technoAudio.currentTime = 0;
@@ -297,8 +298,7 @@ async function fetchSkin(usernameFromParam = null) {
     playErrorSound()
     return;
   }
-
-  // Update URL with username & edition
+  }
   const url = new URL(window.location);
   url.searchParams.set("username", inputValue);
   url.searchParams.set("edition", currentEdition);
@@ -338,14 +338,12 @@ async function fetchSkin(usernameFromParam = null) {
     skinPreview.style.display = "block";
     userDetails.innerHTML = `<h2>${username}</h2> <p>${description}</p> ${userId}`;
     downloadBtn.style.display = "inline-block";
-
-    // Show main UI, hide initial search
     topbar.style.display = "flex";
     mainLayout.style.display = "flex";
     searchInitial.style.display = "none";
 
   } catch (err) {
-    errorMessage.textContent = `Did you mean ${inputValue}?.`;
+    errorMessage.textContent = `User might not exist, or .`;
   } finally {
     loadingSpinner.style.display = "none";
   }
@@ -355,7 +353,6 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   playClickSound();
   downloadSkin();
 });
-// Init edition button on loadmjghghv
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   const editionParam = params.get("edition");
