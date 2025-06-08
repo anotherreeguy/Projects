@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeeGuy poject</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 
@@ -27,21 +25,5 @@ In case of any questions or queries about these Terms, kindly write to us at con
 
 </head>
 <body>
-<script>
-        let typedText = '';
-        const secretText = 'nggyu';
-        const newText = 'never gonna give you up';
-
-        document.addEventListener('keypress', function(event) {
-            typedText += event.key.toLowerCase();
-            if (typedText.includes(secretText)) {
-                document.querySelectorAll('h1, h2, p, li, a').forEach(element => {
-                    element.innerText = newText;
-                });
-                typedText = '';
-                window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'sorry', 'width=600,height=400');
-            }
-        });
-    </script>
 </body>
 </html>
