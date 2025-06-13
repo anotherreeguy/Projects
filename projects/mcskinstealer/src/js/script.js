@@ -349,7 +349,7 @@ async function fetchSkin(usernameFromParam = null) {
 
     if (!textureId || !userId) throw new Error("Invalid or incomplete data received.");
 
-    const skinUrl = `https://vzge.me/full/${textureId}.webp?no=shadow`;
+    const skinUrl = `https://vzge.me/full/832/${textureId}.png?no=shadow`;
 
     updateFavicon(skinUrl);
     thisvariablenamecouldbebetter(skinUrl);
@@ -406,7 +406,7 @@ function downloadSkin() {
   const skinPreview = document.getElementById('skinPreview');
   if (!skinPreview || !skinPreview.src) return;
 
-  const downloadUrl = skinPreview.src.replace('/body/', '/download/');
+  const downloadUrl = "https://mc-heads.net/download/${textureId}";
   const link = document.createElement('a');
   link.href = downloadUrl;
   link.download = 'minecraft_skin.png';
