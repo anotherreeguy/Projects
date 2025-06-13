@@ -124,7 +124,7 @@ function darkenColor({ r, g, b }, pct = 0.3) {
 }
 
 function updateFavicon(skinUrl) {
-  const faviconUrl = "https://mc-haeds.net/download/${textureId}"
+  const faviconUrl = `https://mc-haeds.net/download/${textureId}`
   let link = document.querySelector("link[rel~='icon']");
   if (!link) {
     link = document.createElement('link');
@@ -155,7 +155,7 @@ function renderPreviousSkins() {
   previousSkins.forEach((skin, idx) => {
     const div = document.createElement("div");
     div.classList.add("previous-skin-item");
-    const headUrl = "https://mc-heads.net/${textureId}" + '/50';
+    const headUrl = `https://mc-heads.net/${textureId}` + '/50';
     div.innerHTML = `
       <img src="${headUrl}" alt="Head of ${skin.userId}" class="previous-skin-img cursor-pointer" data-index="${idx}" />
     `;
@@ -406,7 +406,7 @@ function downloadSkin() {
   const skinPreview = document.getElementById('skinPreview');
   if (!skinPreview || !skinPreview.src) return;
 
-  const downloadUrl = "https://mc-heads.net/download/${textureId}";
+  const downloadUrl = `https://mc-heads.net/download/${textureId}`;
   const link = document.createElement('a');
   link.href = downloadUrl;
   link.download = 'minecraft_skin.png';
