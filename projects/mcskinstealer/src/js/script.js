@@ -349,7 +349,7 @@ async function fetchSkin(usernameFromParam = null) {
 
     if (!textureId || !userId) throw new Error("Invalid or incomplete data received.");
 
-    const skinUrl = `https://vzge.me/full/832/${textureId}.png?no=shadow`;
+    const skinUrl = `https://vzge.me/full/350/${textureId}.png?no=shadow`;
 
     updateFavicon(skinUrl);
     thisvariablenamecouldbebetter(skinUrl);
