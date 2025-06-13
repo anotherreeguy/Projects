@@ -1,7 +1,20 @@
 let currentEdition = "mcpe";
 let previousSkins = [];
 let modalOpen = false;
-let makethiswebsitebetter = false
+let makethiswebsitebetter = false;
+let textureId = null;
+
+const soundsPath = '../mcskinstealer/src/sound/';
+const sounds = {
+  click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
+  hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
+  error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
+  success: new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
+  completeSearchOptions: [
+    new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
+    new Audio(`${soundsPath}se_ui_common_decide07.wav`)
+  ]
+};
 
 function toggleSound(enable) {
   makethiswebsitebetter = enable;
@@ -18,19 +31,6 @@ function toggleSound(enable) {
   }
 }
 
-const soundsPath = '../mcskinstealer/src/sound/';
-
-const sounds = {
-  click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
-  hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
-  error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
-  success: new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
-  completeSearchOptions: [
-    new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
-    new Audio(`${soundsPath}se_ui_common_decide07.wav`)
-  ]
-};
-
 function playSound(sound) {
   if (!makethiswebsitebetter) return;
   sound.currentTime = 0;
@@ -40,45 +40,35 @@ function playSound(sound) {
 }
 
 function playSuccessSound() {
-  playSound(sounds.success)
+  playSound(sounds.success);
 }
+
 function playClickSound() {
   playSound(sounds.click);
 }
+
 function playHoverSound() {
   playSound(sounds.hover);
 }
+
 function playErrorSound() {
   playSound(sounds.error);
 }
+
 function playSearchCompleteSound() {
   const sound = sounds.completeSearchOptions[Math.floor(Math.random() * sounds.completeSearchOptions.length)];
   playSound(sound);
 }
 
-window.onload = () => {
-  const params = new URLSearchParams(window.location.search);
-  const editionParam = params.get("edition");
-  const usernameParam = params.get("username");
-
-  if (editionParam && (editionParam === "java" || editionParam === "mcpe")) {
-    currentEdition = editionParam;
-  }
-
-  updateEditionButton();
-
-  if (usernameParam) {
-    document.getElementById("usernameInput").value = usernameParam;
-    fetchSkin(usernameParam);
-  }
-};
 function updateEditionButton() {
   const btn = document.getElementById('editionToggle');
   btn.textContent = `Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
 }
+
 function isDevMode() {
   return document.cookie.split('; ').some(cookie => cookie.startsWith('dev='));
-} 
+}
+
 function getAverageColor(img) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
@@ -88,22 +78,21 @@ function getAverageColor(img) {
   const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
   let r = 0, g = 0, b = 0, count = 0;
   for (let i = 0; i < data.length; i += 4) {
-    if (data[i+3] > 128) {
+    if (data[i + 3] > 128) {
       r += data[i];
-      g += data[i+1];
-      b += data[i+2];
+      g += data[i + 1];
+      b += data[i + 2];
       count++;
     }
   }
   if (count === 0) return { r: 17, g: 17, b: 17 };
-  return { r: Math.floor(r/count), g: Math.floor(g/count), b: Math.floor(b/count) };
+  return { r: Math.floor(r / count), g: Math.floor(g / count), b: Math.floor(b / count) };
 }
 
 function updateBackgroundFromImage(img) {
   const avgColor = getAverageColor(img);
   document.body.style.background = `linear-gradient(to top, rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, 0.2), rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, 0)), rgb(${avgColor.r}, ${avgColor.g}, ${avgColor.b})`;
 }
-
 
 document.body.addEventListener('click', () => {
   makethiswebsitebetter = false;
@@ -124,7 +113,7 @@ function darkenColor({ r, g, b }, pct = 0.3) {
 }
 
 function updateFavicon(skinUrl) {
-  const faviconUrl = `https://mc-haeds.net/download/${textureId}`
+  const faviconUrl = `https://mc-heads.net/download/${textureId}`;
   let link = document.querySelector("link[rel~='icon']");
   if (!link) {
     link = document.createElement('link');
@@ -166,10 +155,11 @@ function renderPreviousSkins() {
     img.addEventListener('click', e => {
       const index = e.target.dataset.index;
       openSkinUsersModal(previousSkins[index].textureId, previousSkins[index].username);
-      playClickSound()
+      playClickSound();
     });
   });
 }
+
 async function openSkinUsersModal(textureId, skinName) {
   if (modalOpen) return;
   modalOpen = true;
@@ -215,12 +205,12 @@ async function openSkinUsersModal(textureId, skinName) {
   usersList.innerHTML = '<p>Loading users...</p>';
 
   try {
-  const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/skin/${encodeURIComponent(textureId)}`;
-  const response = await fetch(apiUrl, {
-    headers: {
-      'ngrok-skip-browser-warning': 'true'
-    }
-  });
+    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/skin/${encodeURIComponent(textureId)}`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
 
     const data = await response.json();
     const users = currentEdition === "java" ? data.java_users : data.mcpe_users;
@@ -254,8 +244,6 @@ async function openSkinUsersModal(textureId, skinName) {
   }
 }
 
-
-
 function toggleEdition() {
   currentEdition = currentEdition === "java" ? "mcpe" : "java";
   playClickSound();
@@ -268,13 +256,13 @@ function toggleEdition() {
   }
 }
 
-
 function handleKeyPress(e) {
   if (e.key === 'Enter') {
     playClickSound();
     fetchSkin();
   }
 }
+
 async function fetchSkin(usernameFromParam = null) {
   const usernameInput = document.getElementById('usernameInput');
   const errorMessage = document.getElementById('errorMessage');
@@ -290,7 +278,7 @@ async function fetchSkin(usernameFromParam = null) {
   technoAudio.volume = 0.8;
   envixityAudio.volume = 1;
   const inputValue = usernameFromParam || usernameInput.value.trim();
-    if (!inputValue) {
+  if (!inputValue) {
     errorMessage.textContent = "Please enter a valid username!";
     return;
   }
@@ -319,12 +307,6 @@ async function fetchSkin(usernameFromParam = null) {
       technoAudio.currentTime = 0;
     }
   }
-  if (!inputValue) {
-    errorMessage.textContent = "Please enter a valid username!";
-    playErrorSound()
-    return;
-  }
-  }
   const url = new URL(window.location);
   url.searchParams.set("username", inputValue);
   url.searchParams.set("edition", currentEdition);
@@ -334,12 +316,12 @@ async function fetchSkin(usernameFromParam = null) {
 
   try {
     const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
-  const response = await fetch(apiUrl, {
-    headers: {
-      'ngrok-skip-browser-warning': 'true'
-    }
-  });
-  playSuccessSound()
+    const response = await fetch(apiUrl, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
+    playSuccessSound();
     const data = await response.json();
 
     const textureId = data.texture_id;
@@ -386,22 +368,7 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   playClickSound();
   downloadSkin();
 });
-window.onload = () => {
-  const params = new URLSearchParams(window.location.search);
-  const editionParam = params.get("edition");
-  const usernameParam = params.get("username");
 
-  if (editionParam && (editionParam === "java" || editionParam === "mcpe")) {
-    currentEdition = editionParam;
-  }
-
-  updateEditionButton();
-
-  if (usernameParam) {
-    document.getElementById("usernameInput").value = usernameParam;
-    fetchSkin(usernameParam);
-  }
-};
 function downloadSkin() {
   const skinPreview = document.getElementById('skinPreview');
   if (!skinPreview || !skinPreview.src) return;
