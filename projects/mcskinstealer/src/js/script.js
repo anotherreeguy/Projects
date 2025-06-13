@@ -2,19 +2,6 @@ let currentEdition = "mcpe";
 let previousSkins = [];
 let modalOpen = false;
 let makethiswebsitebetter = false;
-let textureId = null;
-
-const soundsPath = '../mcskinstealer/src/sound/';
-const sounds = {
-  click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
-  hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
-  error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
-  success: new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
-  completeSearchOptions: [
-    new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
-    new Audio(`${soundsPath}se_ui_common_decide07.wav`)
-  ]
-};
 
 function toggleSound(enable) {
   makethiswebsitebetter = enable;
@@ -30,6 +17,19 @@ function toggleSound(enable) {
     }, { once: true });
   }
 }
+
+const soundsPath = '../mcskinstealer/src/sound/';
+
+const sounds = {
+  click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
+  hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
+  error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
+  success: new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
+  completeSearchOptions: [
+    new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
+    new Audio(`${soundsPath}se_ui_common_decide07.wav`)
+  ]
+};
 
 function playSound(sound) {
   if (!makethiswebsitebetter) return;
@@ -60,6 +60,23 @@ function playSearchCompleteSound() {
   playSound(sound);
 }
 
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const editionParam = params.get("edition");
+  const usernameParam = params.get("username");
+
+  if (editionParam && (editionParam === "java" || editionParam === "mcpe")) {
+    currentEdition = editionParam;
+  }
+
+  updateEditionButton();
+
+  if (usernameParam) {
+    document.getElementById("usernameInput").value = usernameParam;
+    fetchSkin(usernameParam);
+  }
+};
+
 function updateEditionButton() {
   const btn = document.getElementById('editionToggle');
   btn.textContent = `Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
@@ -78,15 +95,15 @@ function getAverageColor(img) {
   const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
   let r = 0, g = 0, b = 0, count = 0;
   for (let i = 0; i < data.length; i += 4) {
-    if (data[i + 3] > 128) {
+    if (data[i+3] > 128) {
       r += data[i];
-      g += data[i + 1];
-      b += data[i + 2];
+      g += data[i+1];
+      b += data[i+2];
       count++;
     }
   }
   if (count === 0) return { r: 17, g: 17, b: 17 };
-  return { r: Math.floor(r / count), g: Math.floor(g / count), b: Math.floor(b / count) };
+  return { r: Math.floor(r/count), g: Math.floor(g/count), b: Math.floor(b/count) };
 }
 
 function updateBackgroundFromImage(img) {
@@ -113,7 +130,7 @@ function darkenColor({ r, g, b }, pct = 0.3) {
 }
 
 function updateFavicon(skinUrl) {
-  const faviconUrl = `https://mc-heads.net/download/${textureId}`;
+  const faviconUrl = `https://mc-haeds.net/download/${textureId}`;
   let link = document.querySelector("link[rel~='icon']");
   if (!link) {
     link = document.createElement('link');
@@ -222,162 +239,19 @@ async function openSkinUsersModal(textureId, skinName) {
 
     usersList.innerHTML = '';
     users.forEach(userId => {
-      const headUrl = `https://mc-heads.net/avatar/${userId}`;
+      const headUrl = `https://mc-heads.net/avatar/${userId}/50`;
       const userDiv = document.createElement('div');
-      userDiv.style.width = '120px';
-      userDiv.style.textAlign = 'center';
-      userDiv.style.border = '1px solid #7c3aed';
-      userDiv.style.padding = '0.5rem';
-      userDiv.style.borderRadius = '0';
-      userDiv.style.backgroundColor = '#2d026f';
-
-      userDiv.innerHTML = `
-        <img src="${headUrl}" alt="Head of ${userId}" style="width: 64px; height: 64px; margin-bottom: 0.25rem;" />
-        <p style="font-weight: 600; margin: 0; word-break: break-word;">${userId}</p>
-      `;
-
+      userDiv.classList.add("user-item");
+      userDiv.innerHTML = `<img src="${headUrl}" class="user-head" alt="${userId}" />`;
       usersList.appendChild(userDiv);
     });
-
-  } catch (err) {
-    usersList.innerHTML = `<p style="color: #ff5555;">Error loading users: ${err.message}</p>`;
+  } catch (error) {
+    console.error('Failed to fetch skin users:', error);
+    usersList.innerHTML = '<h4>Error occurred while fetching skin users. Please try again later.</h4>';
   }
 }
 
-function toggleEdition() {
-  currentEdition = currentEdition === "java" ? "mcpe" : "java";
-  playClickSound();
-  updateEditionButton();
-
-  const params = new URLSearchParams(window.location.search);
-  const username = params.get("username");
-  if (username) {
-    fetchSkin(username);
-  }
-}
-
-function handleKeyPress(e) {
-  if (e.key === 'Enter') {
-    playClickSound();
-    fetchSkin();
-  }
-}
-
-async function fetchSkin(usernameFromParam = null) {
-  const usernameInput = document.getElementById('usernameInput');
-  const errorMessage = document.getElementById('errorMessage');
-  const skinPreview = document.getElementById('skinPreview');
-  const userDetails = document.getElementById('userDetails');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const loadingSpinner = document.getElementById('loadingSpinner');
-  const topbar = document.getElementById('topbar');
-  const mainLayout = document.getElementById('mainLayout');
-  const searchInitial = document.getElementById('searchInitial');
-  const technoAudio = new Audio('/projects/mcskinstealer/src/sound/techno.mp3');
-  const envixityAudio = new Audio('/projects/mcskinstealer/src/sound/creditstonintendo.mp3');
-  technoAudio.volume = 0.8;
-  envixityAudio.volume = 1;
-  const inputValue = usernameFromParam || usernameInput.value.trim();
-  if (!inputValue) {
-    errorMessage.textContent = "Please enter a valid username!";
-    return;
-  }
-  if (inputValue.toLowerCase() === "envixitybo2") {
-    if (envixityAudio.paused) {
-      envixityAudio.currentTime = 0;
-      envixityAudio.play().catch(err => {
-        console.warn("Autoplay blocked or failed:", err);
-      });
-    }
-  } else {
-    if (!envixityAudio.paused) {
-      envixityAudio.pause();
-      envixityAudio.currentTime = 0;
-    };
-  if (inputValue.toLowerCase() === "technoblade") {
-    if (technoAudio.paused) {
-      technoAudio.currentTime = 0;
-      technoAudio.play().catch(err => {
-        console.warn("Autoplay blocked or failed:", err);
-      });
-    }
-  } else {
-    if (!technoAudio.paused) {
-      technoAudio.pause();
-      technoAudio.currentTime = 0;
-    }
-  }
-  const url = new URL(window.location);
-  url.searchParams.set("username", inputValue);
-  url.searchParams.set("edition", currentEdition);
-  window.history.replaceState({}, '', url);
-  errorMessage.textContent = "";
-  loadingSpinner.style.display = "block";
-
-  try {
-    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
-    const response = await fetch(apiUrl, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
-    playSuccessSound();
-    const data = await response.json();
-
-    const textureId = data.texture_id;
-    const userId = data.uuid || data.xuid;
-    const username = data.username || inputValue;
-    const description = data.description || "No bio given.";
-
-    if (!textureId || !userId) throw new Error("Invalid or incomplete data received.");
-
-    const skinUrl = `https://vzge.me/full/350/${textureId}.png?no=shadow`;
-
-    updateFavicon(skinUrl);
-    thisvariablenamecouldbebetter(skinUrl);
-
-    if (!previousSkins.length || previousSkins[previousSkins.length - 1].textureId !== textureId) {
-      previousSkins.push({ textureId, skinUrl, username, description, userId });
-      if (previousSkins.length > 5) previousSkins.shift();
-      renderPreviousSkins();
-    }
-
-    skinPreview.src = skinUrl;
-    skinPreview.style.display = "block";
-    userDetails.innerHTML = `<h2>${username}</h2> <p>${description}</p> ${userId}`;
-    downloadBtn.style.display = "inline-block";
-    topbar.style.display = "flex";
-    mainLayout.style.display = "flex";
-    searchInitial.style.display = "none";
-    let metaDesc = document.querySelector("meta[name='description']");
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.name = "description";
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = `${username}'s profile on Minecraft Skin Finder\n${description}`;
-    document.title = `${username} | ReeGuy's Projects`;
-  } catch (err) {
-    errorMessage.textContent = `User might not exist, or .`;
-  } finally {
-    loadingSpinner.style.display = "none";
-  }
-}
-
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  playClickSound();
-  downloadSkin();
-});
-
-function downloadSkin() {
-  const skinPreview = document.getElementById('skinPreview');
-  if (!skinPreview || !skinPreview.src) return;
-
-  const downloadUrl = `https://mc-heads.net/download/${textureId}`;
-  const link = document.createElement('a');
-  link.href = downloadUrl;
-  link.download = 'minecraft_skin.png';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+function fetchSkin(username) {
+  // Fetch skin data logic goes here
+  console.log('Fetching skin for:', username);
 }
