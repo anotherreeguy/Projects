@@ -99,6 +99,12 @@ function getAverageColor(img) {
   return { r: Math.floor(r/count), g: Math.floor(g/count), b: Math.floor(b/count) };
 }
 
+function updateBackgroundFromImage(img) {
+  const avgColor = getAverageColor(img);
+  document.body.style.background = `linear-gradient(to top, rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, 0.2), rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, 0)), rgb(${avgColor.r}, ${avgColor.g}, ${avgColor.b})`;
+}
+
+
 document.body.addEventListener('click', () => {
   makethiswebsitebetter = false;
 }, { once: true });
@@ -343,7 +349,7 @@ async function fetchSkin(usernameFromParam = null) {
 
     if (!textureId || !userId) throw new Error("Invalid or incomplete data received.");
 
-    const skinUrl = `https://mc-heads.net/body/${textureId}`;
+    const skinUrl = `https://vzge.me/full/${textureId}.webp?no=shadow`;
 
     updateFavicon(skinUrl);
     thisvariablenamecouldbebetter(skinUrl);
