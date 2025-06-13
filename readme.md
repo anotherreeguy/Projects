@@ -18,7 +18,7 @@ Finding the video of questions link, then afterwards inputting it to the search 
 After that, you would be able to see the Youtube thumbnail of question which you may download (*using the download button*).
 
 ## Random server finder!
-I pretend it doesn't exist, it just shows you a random server from [a table.](https://github.com/anotherreeguy/Projects/blob/main/projects/minecraftserverfinder/server-finder.js)
+I pretend it doesn't exist, it shows an random option this [table.](http://projects.reeguy.com/projects/minecraftserverfinder/server-finder.js)
 
 ### How to find the website.
 To find **ReeGuy Projects**, you may need to go to the [**ReeGuy Projects**](https://projects.reeguy.com/) website.
