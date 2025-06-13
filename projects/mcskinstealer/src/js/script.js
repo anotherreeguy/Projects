@@ -99,12 +99,6 @@ function getAverageColor(img) {
   return { r: Math.floor(r/count), g: Math.floor(g/count), b: Math.floor(b/count) };
 }
 
-function updateBackgroundFromImage(img) {
-  const avgColor = getAverageColor(img);
-  document.body.style.background = `linear-gradient(to top, rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, 0.2), rgba(${avgColor.r}, ${avgColor.g}, ${avgColor.b}, 0)), rgb(${avgColor.r}, ${avgColor.g}, ${avgColor.b})`;
-}
-
-
 document.body.addEventListener('click', () => {
   makethiswebsitebetter = false;
 }, { once: true });
@@ -124,7 +118,7 @@ function darkenColor({ r, g, b }, pct = 0.3) {
 }
 
 function updateFavicon(skinUrl) {
-  const faviconUrl = `https://mc-haeds.net/download/${textureId}`
+  const faviconUrl = skinUrl.replace('/body/', '/avatar/');
   let link = document.querySelector("link[rel~='icon']");
   if (!link) {
     link = document.createElement('link');
@@ -155,7 +149,7 @@ function renderPreviousSkins() {
   previousSkins.forEach((skin, idx) => {
     const div = document.createElement("div");
     div.classList.add("previous-skin-item");
-    const headUrl = `https://mc-heads.net/${textureId}` + '/50';
+    const headUrl = skin.skinUrl.replace('/body/', '/avatar/') + '/50';
     div.innerHTML = `
       <img src="${headUrl}" alt="Head of ${skin.userId}" class="previous-skin-img cursor-pointer" data-index="${idx}" />
     `;
@@ -349,7 +343,7 @@ async function fetchSkin(usernameFromParam = null) {
 
     if (!textureId || !userId) throw new Error("Invalid or incomplete data received.");
 
-    const skinUrl = `https://vzge.me/full/350/${textureId}.png?no=shadow`;
+    const skinUrl = `https://mc-heads.net/body/${textureId}`;
 
     updateFavicon(skinUrl);
     thisvariablenamecouldbebetter(skinUrl);
@@ -406,7 +400,7 @@ function downloadSkin() {
   const skinPreview = document.getElementById('skinPreview');
   if (!skinPreview || !skinPreview.src) return;
 
-  const downloadUrl = `https://mc-heads.net/download/${textureId}`;
+  const downloadUrl = skinPreview.src.replace('/body/', '/download/');
   const link = document.createElement('a');
   link.href = downloadUrl;
   link.download = 'minecraft_skin.png';
