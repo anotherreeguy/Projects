@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let typedText = "";
-    const triggerWord = "envixityenvixityenvixity";
+    const triggerWord = "en";
     let triggered = false;
 
     document.addEventListener("keydown", (e) => {
