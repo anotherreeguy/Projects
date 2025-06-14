@@ -2,6 +2,7 @@ let currentEdition = "mcpe";
 let previousSkins = [];
 let modalOpen = false;
 let makethiswebsitebetter = false;
+
 function toggleSound(enable) {
   makethiswebsitebetter = enable;
   if (enable) {
@@ -16,6 +17,7 @@ function toggleSound(enable) {
     }, { once: true });
   }
 }
+
 const soundsPath = '../mcskinstealer/src/sound/';
 const sounds = {
   click: new Audio(`${soundsPath}se_ui_common_scroll_click.wav`),
@@ -143,33 +145,33 @@ async function fetchSkin(usernameFromParam = null) {
 
   const inputValue = usernameFromParam || usernameInput.value.trim();
 
-if (inputValue.toLowerCase() === "envixitybo2") {
-  if (envixityAudio.paused) {
-    envixityAudio.currentTime = 0;
-    envixityAudio.play().catch(err => {
-      console.warn("Autoplay blocked or failed:", err);
-    });
-  }
-} else {
-  if (!envixityAudio.paused) {
-    envixityAudio.pause();
-    envixityAudio.currentTime = 0;
-  }
-
-  if (inputValue.toLowerCase() === "technoblade") {
-    if (technoAudio.paused) {
-      technoAudio.currentTime = 0;
-      technoAudio.play().catch(err => {
+  if (inputValue.toLowerCase() === "envixitybo2") {
+    if (envixityAudio.paused) {
+      envixityAudio.currentTime = 0;
+      envixityAudio.play().catch(err => {
         console.warn("Autoplay blocked or failed:", err);
       });
     }
   } else {
-    if (!technoAudio.paused) {
-      technoAudio.pause();
-      technoAudio.currentTime = 0;
+    if (!envixityAudio.paused) {
+      envixityAudio.pause();
+      envixityAudio.currentTime = 0;
+    }
+
+    if (inputValue.toLowerCase() === "technoblade") {
+      if (technoAudio.paused) {
+        technoAudio.currentTime = 0;
+        technoAudio.play().catch(err => {
+          console.warn("Autoplay blocked or failed:", err);
+        });
+      }
+    } else {
+      if (!technoAudio.paused) {
+        technoAudio.pause();
+        technoAudio.currentTime = 0;
+      }
     }
   }
-}
 
   if (!inputValue) {
     errorMessage.textContent = "Please enter a valid username!";
@@ -198,9 +200,14 @@ if (inputValue.toLowerCase() === "envixitybo2") {
     if (!response.ok) throw new Error("Network response not OK");
 
     const data = await response.json();
-    const { texture_id: textureId, uuid, xuid, username, description = "No bio given.", previous_skins = [] } = data;
+    const { texture_id: textureId, uuid, xuid, username, description = "No bio given.", previous_skins = [], isSlim } = data;
     const userId = uuid || xuid;
-    const skinUrl = `https://vzge.me/full/310/${textureId}.png?no=shadow`;
+    let skinUrl = `https://vzge.me/full/310/${textureId}.png?no=shadow`;
+
+    // Append ?slim=true if isSlim is true
+    if (isSlim) {
+      skinUrl += "&slim=true";
+    }
 
     if (!textureId || !userId) throw new Error("Invalid or incomplete data received.");
 
@@ -219,8 +226,10 @@ if (inputValue.toLowerCase() === "envixitybo2") {
         });
       }
     });
+
     if (previousSkins.length > 20) previousSkins.splice(0, previousSkins.length - 20);
     renderPreviousSkins();
+
     skinPreview.style.opacity = 0;
     skinPreview.src = skinUrl;
     skinPreview.style.display = "block";
@@ -228,6 +237,7 @@ if (inputValue.toLowerCase() === "envixitybo2") {
       skinPreview.style.transition = "opacity 0.5s ease";
       skinPreview.style.opacity = 1;
     };
+
     userDetails.innerHTML = `<h2>${username}</h2><p>${description}</p>${userId}`;
     downloadBtn.style.display = "inline-block";
     downloadBtn.dataset.textureId = textureId;
@@ -254,6 +264,7 @@ if (inputValue.toLowerCase() === "envixitybo2") {
     if (soundToggle) soundToggle.disabled = false;
   }
 }
+
 document.getElementById("downloadBtn").addEventListener("click", () => {
   playClickSound();
   const textureId = document.getElementById("downloadBtn").dataset.textureId;
@@ -269,6 +280,7 @@ function downloadSkin(textureId) {
   link.click();
   document.body.removeChild(link);
 }
+
 const editionToggleBtn = document.getElementById('editionToggle');
 editionToggleBtn.addEventListener('click', () => {
   playClickSound();
@@ -277,6 +289,7 @@ editionToggleBtn.addEventListener('click', () => {
   const username = document.getElementById('usernameInput').value.trim();
   if (username) fetchSkin(username);
 });
+
 editionToggleBtn.addEventListener('mouseenter', () => playHoverSound());
 editionToggleBtn.addEventListener('focus', () => playClickSound());
 editionToggleBtn.addEventListener('keydown', (e) => {
@@ -285,6 +298,7 @@ editionToggleBtn.addEventListener('keydown', (e) => {
     editionToggleBtn.click();
   }
 });
+
 const usernameInput = document.getElementById('usernameInput');
 usernameInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
@@ -294,8 +308,10 @@ usernameInput.addEventListener('keydown', (e) => {
     errorMessage.textContent = "";
   }
 });
+
 usernameInput.addEventListener('focus', () => playClickSound());
 usernameInput.addEventListener('mouseenter', () => playHoverSound());
+
 const soundToggle = document.getElementById('soundToggle');
 if (soundToggle) {
   soundToggle.title = "Toggle sounds on/off";
