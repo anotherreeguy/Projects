@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Download and see Bedrock skins." />
   <meta name="keywords" content="Minecraft skins, Minecraft skin finder, download Minecraft skins, Minecraft skin finder bedrock, Minecraft skin stealer" />
   <meta name="author" content="ReeGuy Projects" />
@@ -12,8 +14,6 @@
   <meta name="twitter:title" content="Minecraft Skin Finder | Search & Download Skins Instantly" />
   <meta name="twitter:description" content="Find and download Minecraft Bedrock and Java skins instantly!" />
   <meta name="twitter:image" content="https://redirects.reeguy.com/img/VOTE.png" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Minecraft Skin Finder | Bedrock and Java support!</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -41,8 +41,9 @@
   <a href="/" class="absolute top-4 left-4">
     <img src="../../src/reeguyprojects.png" alt="ReeGuy Projects" class="h-12 w-auto">
   </a>
-  <div id="topbar" class="re">
-  </div>
+
+  <div id="topbar" class="re"></div>
+
   <div id="searchInitial" class="flex flex-col items-center justify-center flex-1 px-6 py-10 w-full max-w-md text-center">
     <div class="flex gap-2 w-full max-w-md">
       <input
@@ -59,40 +60,38 @@
         <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
     </div>
   </div>
+
   <div id="mainLayout" class="hidden flex-wrap lg:flex-nowrap gap-10 px-6 py-10 w-full max-w-5xl flex justify-center items-start">
     <div class="flex justify-center w-full lg:w-auto">
-      <img
-        id="skinPreview"
-        src=""
-        alt="Skin Preview"
-      />
+      <img id="skinPreview" src="" alt="Skin Preview" />
     </div>
     <div class="flex flex-col gap-4 w-full max-w-md">
       <p id="userDetails" class="text-lg text-gray-300"></p>
       <div id="loadingSpinner" class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto hidden"></div>
-      <div id="previousSkins" class="small"></div>
-      <div id="previousSkins" class="small" style="font-size: 1px; padding: 1px;"></div>
+      <div id="previousSkins" class="flex flex-row flex-wrap gap-2"></div>
       <button id="downloadBtn" onclick="downloadSkin()" class="hidden box-button bg-green-600 hover:bg-green-500 text-white">Download</button>
-      <footer id="splash-text", style="color: rgb(136, 140, 255)", style="font-weight: bold ">minceraft skin founder</footer>
-        <script>
-      const Splash = [
-        "'Nice skin you got there!' - Myself",
-        "guys theres a downwoad",
-        "Mining away, in this Minecraft day.",
-        "Creeper! Aw man!",
-        "Have any feedback for this website? Email contact@reeguy.com", 
-        "Mining away, in this Minecraft day <i>its so beautiful</i>", 
-        "Huge thanks to Geyser!",
-        "Where did you find this website?"
-      ];
-      const splash = Splash[Math.floor(Math.random() * Splash.length)];
-      document.getElementById('splash-text').textContent = splash;
-  </script>
+      <footer id="splash-text" style="color: rgb(136, 140, 255); font-weight: bold">minceraft skin founder</footer>
+      <script>
+        const Splash = [
+          '"Nice skin you got there!" - Myself',
+          "guys theres a downwoad",
+          "Mining away, in this Minecraft day.",
+          "Creeper! Aw man!",
+          "Have any feedback for this website? Email contact@reeguy.com", 
+          "Mining away, in this Minecraft day <i>its so beautiful</i>", 
+          "Huge thanks to Geyser!",
+          "Where did you find this website?"
+        ];
+        const splash = Splash[Math.floor(Math.random() * Splash.length)];
+        document.getElementById('splash-text').textContent = splash;
+      </script>
     </div>
   </div>
-    <link rel="stylesheet" href="src/css/reebit.css" media="print" onload="this.media='all'">
-    <script src="src/js/script.js"></script>
+
+  <link rel="stylesheet" href="https://projects.reeguy.com/projects/mcskinstealer/src/css/reebit.css" media="print" onload="this.media='all'">
+  <script src="src/js/script.js"></script>
 </body>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -112,13 +111,4 @@
   }
 }
 </script>
-<section>
-  <h2>Frequently Asked Questions</h2>
-  <h3>How do I find a Minecraft skin?</h3>
-  <p>Enter a Minecraft username in the search box and click "Search." You'll see the player's current skin.</p>
-
-  <h3>Can I download Java Edition skins?</h3>
-  <p>Currently, our tool supports Bedrock skins. Java Edition support is coming soon!</p>
-</section>
-
 </html>
