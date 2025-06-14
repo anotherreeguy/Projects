@@ -114,7 +114,11 @@ function renderPreviousSkins() {
       if (!previousSkins[index]) return;
       const selectedSkin = previousSkins[index];
       skinPreview.src = selectedSkin.skinUrl;
-      originalSrc = selectedSkin.skinUrl;
+
+      // Update download button textureId here!
+      const downloadBtn = document.getElementById("downloadBtn");
+      downloadBtn.dataset.textureId = selectedSkin.textureId;
+
       playClickSound();
     });
   });
