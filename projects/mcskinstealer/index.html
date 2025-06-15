@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Download and see Bedrock skins." />
-  <meta name="keywords" content="Minecraft skins, Minecraft skin finder, download Minecraft skins, Minecraft skin finder bedrock, Minecraft skin stealer" />
+  <meta name="keywords" content="Minecraft skins, Minecraft skin finder, download Minecraft skins, Minecraft skin finder bedrock, Minecraft skin stealer, bedrock, mcpe, minecraft education, java, Minecraft" />
   <meta name="author" content="ReeGuy Projects" />
   <meta property="og:title" content="Minecraft Skin Finder" />
   <meta property="og:description" content="Download and see Bedrock skins!" />
@@ -38,12 +38,10 @@
   </script>
 </head>
 <body class="transition-colors duration-500 bg-darkbg text-white min-h-screen flex flex-col items-center">
-  <a href="/" class="absolute top-4 left-4">
+  <a href="/projects/mcskinstealer/" class="absolute top-4 left-4">
     <img src="../../src/reeguyprojects.png" alt="ReeGuy Projects" class="h-12 w-auto">
   </a>
-
   <div id="topbar" class="re"></div>
-
   <div id="searchInitial" class="flex flex-col items-center justify-center flex-1 px-6 py-10 w-full max-w-md text-center">
     <div class="flex gap-2 w-full max-w-md">
       <input
@@ -60,7 +58,6 @@
         <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
     </div>
   </div>
-
   <div id="mainLayout" class="hidden flex-wrap lg:flex-nowrap gap-10 px-6 py-10 w-full max-w-5xl flex justify-center items-start">
     <div class="flex justify-center w-full lg:w-auto">
       <img id="skinPreview" src="" alt="Skin Preview" />
@@ -69,30 +66,31 @@
       <p id="userDetails" class="text-lg text-gray-300"></p>
       <div id="loadingSpinner" class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto hidden"></div>
       <div id="previousSkins" class="flex flex-row flex-wrap gap-2"></div>
-      <footer id="splash-text" style="color: rgb(136, 140, 255); font-weight: bold">minceraft skin founder</footer>
-      <button id="downloadBtn" onclick="downloadSkin()" class="hidden box-button bg-green-600 hover:bg-green-500 text-white">Download</button>
+      <footer id="splash-text" style="color: rgb(142, 101, 255); font-weight: bold; text-align: center;">minceraft skin founder</footer>
+      <button id="downloadBtn" onclick="downloadSkin()" class="hidden box-button text-white">Download</button>
       <script>
         const Splash = [
-          '"Nice skin you got there!" - Myself',
-          "guys theres a downwoad",
+          '"Nice skin you got there!" - Somebody.',
+          "fwee downrload",
           "Mining away, in this Minecraft day.",
           "Creeper! Aw man!",
-          "Have any feedback for this website? Email contact@reeguy.com", 
-          "Mining away, in this Minecraft day <i>its so beautiful</i>", 
+          "Have any feedback for this website? Email contact@reeguy.com!",  
           "Huge thanks to Geyser!",
-          "Where did you find this website?"
+          "Minecraft server coming soon!",
+          "Minecrafting",
+          "Huge thanks to Notch!",
+          "Huge thanks to Xbox!",
+          "Huge thanks to mc-heads.net and vzge.me"
         ];
         const splash = Splash[Math.floor(Math.random() * Splash.length)];
         document.getElementById('splash-text').textContent = splash;
       </script>
     </div>
   </div>
-
-  <link rel="stylesheet" href="src/css/reebit.css" media="print" onload="this.media='all'">
-  <script src="src/js/script.js"></script>
+<link rel="stylesheet" href="src/css/reebit.css" media="print" onload="this.media='all'">
+<script src="src/js/script.js"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"94ff1d2d38568647","version":"2025.6.2","r":1,"token":"d87d5afbfd024a79aa1ae0fa4cda6bba","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' crossorigin="anonymous"></script>
 </body>
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
