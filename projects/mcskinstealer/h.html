@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="View and sort Minecraft textures by usage." />
+  <meta name="author" content="ReeGuy Projects" />
+  <title>Minecraft Texture Viewer</title>
+  <link rel="stylesheet" href="src/css/reebit.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #modal {
+      transition: opacity 0.3s ease;
+    }
+    #modal.show {
+      display: flex !important;
+      opacity: 1;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    #modal.hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none !important;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    /* Scrollbar styling for modal user list */
+    #userList {
+      max-height: 40vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #4B5563 transparent;
+    }
+    #userList::-webkit-scrollbar {
+      width: 8px;
+    }
+    #userList::-webkit-scrollbar-thumb {
+      background-color: #4B5563;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-darkbg text-white font-sans min-h-screen p-6 relative">
+  <a href="/" class="absolute top-4 left-4 z-50 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded">
+    <img src="../../src/reeguyprojects.png" alt="ReeGuy Projects Logo" class="h-12 w-auto" />
+  </a>
+
+  <h1 class="text-4xl font-extrabold text-center mb-8 select-none tracking-wide">
+    Minecraft Texture Viewer
+  </h1>
+
+  <main id="textureList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"></main>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="bg-gray-900 rounded-lg p-6 max-w-lg w-full shadow-lg flex flex-col">
+      <h2 id="modalTitle" class="text-2xl font-bold mb-4 select-none">Users</h2>
+      <ul id="userList" class="space-y-2 text-lg text-gray-300" tabindex="0" aria-live="polite"></ul>
+      <button id="closeModalBtn" class="mt-6 self-end bg-red-600 hover:bg-red-500 focus:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 rounded px-5 py-2 font-semibold transition">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const API_ENDPOINT = "https://tolerant-destined-mosquito.ngrok-free.app/textures";
+
+    const textureList = document.getElementById('textureList');
+    const modal = document.getElementById('modal');
+    const userList = document.getElementById('userList');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Cache usernames for UUIDs/XUIDs
+    const usernameCache = new Map();
+
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Close modal with ESC key
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        closeModal();
+      }
+    });
+
+    function closeModal() {
+      modal.classList.remove('show');
+      modal.classList.add('hidden');
+      userList.innerHTML = '';
+    }
+
+    function showModal() {
+      modal.classList.add('show');
+      modal.classList.remove('hidden');
+      userList.focus();
+    }
+
+    async function usernameToUUID(username) {
+      try {
+        const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.id || null;
+      } catch (e) {
+        console.error(`Error fetching UUID for username ${username}:`, e);
+        return null;
+      }
+    }
+
+    async function resolveBedrockUsername(xuid) {
+      try {
+        const res = await fetch(`https://api.geysermc.org/v2/xbox/xuid/${xuid}`);
+        if (!res.ok) {
+          console.warn(`Failed to resolve Bedrock username for XUID ${xuid}: HTTP ${res.status}`);
+          return xuid;
+        }
+        const data = await res.json();
+        return data.name || xuid;
+      } catch (e) {
+        console.error(`Error resolving Bedrock username for XUID ${xuid}:`, e);
+        return xuid;
+      }
+    }
+
+    async function resolveJavaUsername(uuid) {
+      const cleanUuid = uuid.replace(/-/g, '');
+      try {
+        const res = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${cleanUuid}`);
+        if (!res.ok) {
+          console.warn(`Failed to resolve Java username for UUID ${uuid}: HTTP ${res.status}`);
+          return uuid;
+        }
+        const data = await res.json();
+        return data.name || uuid;
+      } catch (e) {
+        console.error(`Error resolving Java username for UUID ${uuid}:`, e);
+        return uuid;
+      }
+    }
+
+    function isBedrockXUID(id) {
+      return /^[0-9]{15,20}$/.test(id);
+    }
+
+    function isJavaUUID(id) {
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    }
+
+    function isMinecraftUsername(id) {
+      return /^[a-zA-Z0-9_]{3,16}$/.test(id);
+    }
+
+    async function resolveUsername(id, edition) {
+      if (usernameCache.has(id)) return usernameCache.get(id);
+
+      let username = id;
+
+      if (edition === 'bedrock') {
+        if (isBedrockXUID(id)) {
+          username = await resolveBedrockUsername(id);
+        } else if (isMinecraftUsername(id)) {
+          // No public username->XUID API; fallback to username as-is
+          username = id;
+        }
+      } else if (edition === 'java') {
+        if (isJavaUUID(id)) {
+          username = await resolveJavaUsername(id);
+        } else if (isMinecraftUsername(id)) {
+          // username -> UUID -> username to verify
+          const uuid = await usernameToUUID(id);
+          if (uuid) {
+            username = await resolveJavaUsername(uuid);
+          } else {
+            username = id;
+          }
+        }
+      } else {
+        username = id;
+      }
+
+      usernameCache.set(id, username);
+      return username;
+    }
+
+    async function renderUserList(users, edition) {
+      userList.innerHTML = '<li class="text-gray-400">Loading usernames...</li>';
+
+      const resolvedNames = await Promise.all(users.map(id => resolveUsername(id, edition)));
+
+      // Sort usernames alphabetically safely
+      resolvedNames.sort((a, b) => {
+        if (typeof a !== 'string') a = String(a);
+        if (typeof b !== 'string') b = String(b);
+        return a.localeCompare(b);
+      });
+
+      userList.innerHTML = resolvedNames.map(username => {
+        const safeName = encodeURIComponent(username);
+        return `<li>
+          <a href="https://projects.reeguy.com/projects/mcskinstealer/?username=${safeName}&edition=${edition}"
+             target="_blank" rel="noopener noreferrer"
+             class="text-blue-400 hover:underline">
+            ${username}
+          </a>
+        </li>`;
+      }).join('');
+    }
+
+    function showUsers(users, edition) {
+      renderUserList(users, edition);
+      showModal();
+    }
+
+    async function fetchTextures() {
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        if (!res.ok) throw new Error('Failed to fetch textures');
+        const data = await res.json();
+
+        data.sort((a, b) => b.users.length - a.users.length);
+
+        textureList.innerHTML = data.map(texture => `
+          <article class="bg-gray-900 rounded-lg p-4 shadow hover:shadow-lg transition cursor-pointer select-none" tabindex="0" role="button" aria-pressed="false" aria-label="${texture.users.length} users use this texture">
+            <img src="https://textures.minecraft.net/texture/${texture.texture_id}" alt="Skin texture preview" class="w-full rounded mb-3 object-cover aspect-[1/1]" />
+            <p class="text-gray-400 mb-3 font-semibold">${texture.users.length} user${texture.users.length !== 1 ? 's' : ''}</p>
+            <button type="button" class="view-users-btn bg-indigo-600 hover:bg-indigo-500 focus:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded px-4 py-2 font-semibold w-full text-white transition">
+              View Users
+            </button>
+          </article>
+        `).join('');
+
+        // Delegate event listeners efficiently
+        textureList.querySelectorAll('.view-users-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const parent = btn.closest('article');
+            if (!parent) return;
+            const idx = Array.from(textureList.children).indexOf(parent);
+            if (idx === -1) return;
+
+            const texture = data[idx];
+            showUsers(texture.users, texture.edition);
+          });
+        });
+
+        // Accessibility: allow opening modal by keyboard enter/space on articles
+        textureList.querySelectorAll('article').forEach((article, index) => {
+          article.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              const texture = data[index];
+              showUsers(texture.users, texture.edition);
+            }
+          });
+        });
+
+      } catch (err) {
+        textureList.innerHTML = `<p class="text-red-500 text-center col-span-full">Error loading textures: ${err.message}</p>`;
+        console.error(err);
+      }
+    }
+
+    fetchTextures();
+  </script>
+</body>
+</html>
