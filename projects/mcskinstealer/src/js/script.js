@@ -99,7 +99,6 @@ function renderPreviousSkins() {
   const container = document.getElementById("previousSkins");
   if (!container) return;
   container.innerHTML = "";
-
   previousSkins.forEach((skin, idx) => {
     const div = document.createElement("div");
     div.classList.add("previous-skin-item");
@@ -132,41 +131,31 @@ async function fetchSkin(usernameFromParam = null) {
   const topbar = document.getElementById('topbar');
   const mainLayout = document.getElementById('mainLayout');
   const searchInitial = document.getElementById('searchInitial');
-
   const inputValue = usernameFromParam || usernameInput.value.trim();
-
   if (!inputValue) {
     errorMessage.textContent = "Please enter a valid username!";
     playErrorSound();
     return;
   }
-
   usernameInput.disabled = true;
   downloadBtn.disabled = true;
   errorMessage.textContent = "";
   loadingSpinner.style.display = "block";
-
   try {
     const url = new URL(window.location);
     url.searchParams.set("username", inputValue);
     url.searchParams.set("edition", currentEdition);
     window.history.replaceState({}, '', url);
-
     const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app/${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
     const response = await fetch(apiUrl, { headers: { 'ngrok-skip-browser-warning': 'true' } });
-
     if (!response.ok) throw new Error("Network response not OK");
-
     const data = await response.json();
     const { texture_id: textureId, uuid, xuid, username, uid, description = "No bio given.", previous_skins = [], isSlim } = data;
     const mcid = uuid || xuid;
     if (!textureId || !mcid) throw new Error("Invalid or incomplete data received.");
-
     const skinUrl = `https://vzge.me/full/310/${textureId}.png?no=shadow${isSlim ? "&slim=true" : ""}`;
     updateFavicon(textureId);
     applyBackgroundFromSkin(skinUrl);
-
-    // Add skins but avoid duplicates by textureId
     const knownTextureIds = new Set(previousSkins.map(s => s.textureId));
     [textureId, ...previous_skins].forEach(id => {
       if (!knownTextureIds.has(id)) {
