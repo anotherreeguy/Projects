@@ -42,22 +42,42 @@
     <img src="../../src/reeguyprojects.png" alt="ReeGuy Projects" class="h-12 w-auto">
   </a>
   <div id="topbar" class="re"></div>
-  <div id="searchInitial" class="flex flex-col items-center justify-center flex-1 px-6 py-10 w-full max-w-md text-center">
-    <div class="flex gap-2 w-full max-w-md">
-      <input
-        id="usernameInput"
-        type="text"
-        placeholder="Enter acconut name!"
-        onkeypress="handleKeyPress(event)"
-        class="flex-grow p-4 rounded-lg bg-gray-800 border border-inputBorder text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-    </div>
-    <button onclick="fetchSkin()" class="box-button mt-4 w-full max-w-md">Search</button>
-    <div id="p-4">
-        <button onclick="toggleEdition()" id="editionToggle" class="box-button">Change Editions</button>
-        <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
+  <div>
+  <div id="searchInitial">
+    <div>
+  <div class="group">
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="search-icon">
+      <g>
+        <path
+          d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"
+        ></path>
+      </g>
+    </svg>
+    <input
+      id="usernameInput"
+      class="input"
+      type="input"
+      placeholder="Enter account name!"
+      name="searchSkin"
+    />
+  </div>
+<div id="p-4" class="flex flex-col items-center gap-4">
+  <p id="theworstdiv" class="text-red-500 text-sm mt-2"></p>
+
+  <div class="flex flex-col sm:flex-row gap-4 justify-center">
+    <button onclick="fetchSkin()" class="cursor-pointer transition-all bg-gray-600 text-white px-6 py-2 rounded-lg border-gray-700 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
+      Search
+    </button>
+
+    <button onclick="toggleEdition()" id="editionToggle" class="editionToggle cursor-pointer transition-all bg-gray-600 text-white px-6 py-2 rounded-lg border-gray-700 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]" title="Click to switch edition">
+      button no load
+    </button>
+  </div>
+</div>
+
     </div>
   </div>
+  <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
   <div id="mainLayout" class="hidden flex-wrap lg:flex-nowrap gap-10 px-6 py-10 w-full max-w-5xl flex justify-center items-start">
     <div class="flex justify-center w-full lg:w-auto">
       <img id="skinPreview" src="" alt="Skin Preview" />
@@ -67,7 +87,7 @@
       <div id="loadingSpinner" class="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto hidden"></div>
       <div id="previousSkins" class="flex flex-row flex-wrap gap-2"></div>
       <footer id="splash-text" style="color: rgb(255, 255, 255); font-weight: bold; text-align: left;">minceraft skin founder</footer>
-      <button id="downloadBtn" onclick="downloadSkin()" class="hidden box-button text-white">Download</button>
+      <button id="downloadBtn" onclick="downloadSkin()" class="editionToggle cursor-pointer transition-all bg-gray-600 text-white px-6 py-2 rounded-lg border-gray-700 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px] active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">Download</button>
       <script>
         const Splash = [
           '"Nice skin you got there!" - Somebody.',
