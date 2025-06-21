@@ -146,7 +146,7 @@ async function fetchSkin(usernameFromParam = null) {
     url.searchParams.set("username", inputValue);
     url.searchParams.set("edition", currentEdition);
     window.history.replaceState({}, '', url);
-    const apiUrl = `http://api.reeguy.com:4440//${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
+    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app///${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
     const response = await fetch(apiUrl, { headers: { 'ngrok-skip-browser-warning': 'true' } });
     if (!response.ok) throw new Error("Network response not OK");
     const data = await response.json();
