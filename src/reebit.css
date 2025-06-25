@@ -9,17 +9,22 @@
 body {
   font-family: 'Inter', sans-serif;
   color: #EDEDED;
-  background: radial-gradient(circle at 50% 50%, #0A0A0A 0%, #121212 50%, #1A1A1A 100%);
+  background: linear-gradient(120deg, #111 0%, #222 100%);
   text-align: center;
   padding: 20px;
   position: relative;
   overflow: hidden;
-  cursor: none;
+  cursor: default;
 }
 
 @keyframes bgPulse {
-  0% { background: radial-gradient(circle at 50% 50%, #0A0A0A 0%, #121212 50%, #1A1A1A 100%); }
-  100% { background: radial-gradient(circle at 50% 50%, #0C0C0C 0%, #181818 50%, #222222 100%); }
+  0% { background-position: 0% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes nebulaMove {
+  0% { transform: translate(-30px, -30px) scale(1); opacity: 0.3; }
+  100% { transform: translate(30px, 30px) scale(1.2); opacity: 0.5; }
 }
 
 body::before {
@@ -29,14 +34,9 @@ body::before {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 50% 50%, rgba(120, 80, 160, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+  background: radial-gradient(circle at 60% 40%, rgba(180,180,180,0.10) 0%, rgba(0,0,0,0) 70%);
   animation: nebulaMove 15s infinite alternate ease-in-out;
   pointer-events: none;
-}
-
-@keyframes nebulaMove {
-  0% { transform: translate(-30px, -30px) scale(1); opacity: 0.3; }
-  100% { transform: translate(30px, 30px) scale(1.2); opacity: 0.5; }
 }
 
 .cursor {
@@ -56,9 +56,9 @@ body::before {
   padding: 30px;
   border-radius: 15px;
   backdrop-filter: blur(14px);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.15);
   position: relative;
   z-index: 2;
 }
@@ -75,7 +75,7 @@ body::before {
   margin-bottom: 15px;
   letter-spacing: -0.5px;
   color: #EDEDED;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 12px rgba(255,255,255,0.2);
 }
 
 p {
@@ -94,12 +94,12 @@ p {
 }
 
 .btn {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
   padding: 0;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.1);
   color: #fff;
   text-decoration: none;
   border-radius: 12px;
@@ -109,30 +109,29 @@ p {
   overflow: hidden;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease-in-out;
+  transition: transform 0.25s, box-shadow 0.25s;
 }
 
 .btn:hover {
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 16px rgba(120, 80, 160, 0.5);
+  box-shadow: 0 8px 16px rgba(120,80,160,0.5);
 }
 
 .btn:active {
-  transform: scale(0.98); /* Prevents shrinking too much */
+  transform: scale(0.98);
 }
 
-/* ✨ Button Glow */
 .btn::before {
   content: "";
   position: absolute;
   inset: 4px;
   border-radius: 10px;
-  border: 2px solid rgba(120, 80, 160, 0.4);
-  pointer-events: none;
-  box-sizing: border-box;
+  border: 2px solid rgba(120,80,160,0.4);
   opacity: 0;
   transform: scale(0);
-  transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
 }
 
 .btn:hover::before {
@@ -147,14 +146,15 @@ p {
   height: 200%;
   top: 50%;
   left: 50%;
-  background: radial-gradient(circle, rgba(120, 80, 160, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
-  transform: translate(-50%, -50%) scale(0);
+  background: radial-gradient(circle,rgba(120,80,160,0.2) 0%,rgba(0,0,0,0) 70%);
+  transform: translate(-50%,-50%) scale(0);
   opacity: 0;
-  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+  pointer-events: none;
+  transition: transform 0.4s, opacity 0.4s;
 }
 
 .btn:active::after {
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%,-50%) scale(1);
   opacity: 1;
 }
 
@@ -164,7 +164,7 @@ p {
   height: auto;
   border-radius: 12px;
   filter: grayscale(10%) brightness(95%);
-  transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transition: filter 0.3s, transform 0.3s;
   pointer-events: none;
 }
 
@@ -183,15 +183,7 @@ p {
 }
 
 @media (max-width: 600px) {
-  .hero h1 {
-    font-size: 2.8rem;
-  }
-
-  p {
-    font-size: 1.3rem;
-  }
-
-  .btn-label {
-    font-size: 0.95rem;
-  }
+  .hero h1 { font-size: 2.8rem; }
+  p { font-size: 1.3rem; }
+  .btn-label { font-size: 0.95rem; }
 }
