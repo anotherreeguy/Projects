@@ -1,4 +1,5 @@
 let currentEdition = "mcpe";
+let previousSkins = [];
 let modalOpen = false;
 let makethiswebsitebetter = false;
 
@@ -94,9 +95,42 @@ function applyBackgroundFromSkin(skinUrl) {
   };
 }
 
+function renderPreviousSkins() {
+  const container = document.getElementById("previousSkins");
+  if (!container) return;
+  container.innerHTML = "";
+  previousSkins.forEach((skin, idx) => {
+    const div = document.createElement("div");
+    div.classList.add("previous-skin-item");
+    const headUrl = `https://mc-heads.net/avatar/${skin.textureId}/35`;
+    div.innerHTML = `<img src="${headUrl}" alt="Head of ${skin.mcid}" class="previous-skin-img cursor-pointer" data-index="${idx}" title="View ${skin.username} skin preview" />`;
+    container.appendChild(div);
+  });
+
+  container.querySelectorAll('.previous-skin-img').forEach(img => {
+    img.addEventListener('click', e => {
+      const index = +e.target.dataset.index;
+      if (!previousSkins[index]) return;
+      const selectedSkin = previousSkins[index];
+      const skinPreview = document.getElementById("skinPreview");
+      const downloadBtn = document.getElementById("downloadBtn");
+      skinPreview.src = selectedSkin.skinUrl;
+      downloadBtn.dataset.textureId = selectedSkin.textureId;
+      playClickSound();
+    });
+  });
+}
+
 async function fetchSkin(usernameFromParam = null) {
   const usernameInput = document.getElementById('usernameInput');
   const errorMessage = document.getElementById('errorMessage');
+  const skinPreview = document.getElementById('skinPreview');
+  const userDetails = document.getElementById('userDetails');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+  const topbar = document.getElementById('topbar');
+  const mainLayout = document.getElementById('mainLayout');
+  const searchInitial = document.getElementById('searchInitial');
   const inputValue = usernameFromParam || usernameInput.value.trim();
   if (!inputValue) {
     errorMessage.textContent = "Please enter a valid username!";
@@ -104,19 +138,98 @@ async function fetchSkin(usernameFromParam = null) {
     return;
   }
   usernameInput.disabled = true;
+  downloadBtn.disabled = true;
   errorMessage.textContent = "";
+  loadingSpinner.style.display = "block";
   try {
     const url = new URL(window.location);
     url.searchParams.set("username", inputValue);
     url.searchParams.set("edition", currentEdition);
     window.history.replaceState({}, '', url);
-    window.location.href = `User/?username=${encodeURIComponent(inputValue)}&edition=${currentEdition}`;
+    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app///${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
+    const response = await fetch(apiUrl, { headers: { 'ngrok-skip-browser-warning': 'true' } });
+    if (!response.ok) throw new Error("Network response not OK");
+    const data = await response.json();
+    const { texture_id: textureId, uuid, xuid, username, uid, description = "No bio given.", previous_skins = [], isSlim } = data;
+    const mcid = uuid || xuid;
+    if (!textureId || !mcid) throw new Error("Invalid or incomplete data received.");
+    const skinUrl = `https://vzge.me/full/310/${textureId}.png?no=shadow${isSlim ? "&slim=true" : ""}`;
+    updateFavicon(textureId);
+    applyBackgroundFromSkin(skinUrl);
+    const knownTextureIds = new Set(previousSkins.map(s => s.textureId));
+    [textureId, ...previous_skins].forEach(id => {
+      if (!knownTextureIds.has(id)) {
+        previousSkins.push({
+          textureId: id,
+          skinUrl: `https://vzge.me/full/310/${id}.png?no=shadow`,
+          username,
+          description,
+          mcid
+        });
+        knownTextureIds.add(id);
+      }
+    });
+    if (previousSkins.length > 20) previousSkins.splice(0, previousSkins.length - 20);
+    renderPreviousSkins();
+
+    skinPreview.style.opacity = 0;
+    skinPreview.src = skinUrl;
+    skinPreview.style.display = "block";
+    skinPreview.onload = () => {
+      skinPreview.style.transition = "opacity 0.5s ease";
+      skinPreview.style.opacity = 1;
+    };
+
+userDetails.innerHTML = `
+  <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
+    <h2 style="margin: 0 0 0.4rem; font-size: 1.8rem; font-weight: 700; color:rgb(255, 255, 255);">${username}</h2>
+    <p style="margin: 0 0 0.5rem; font-size: 1rem; line-height: 0.5; color: #ccc;">${description}</p>
+    <div style="font-size: 0.9rem">
+      <strong style="color:rgb(214, 214, 214);">${currentEdition === 'java' ? 'UUID' : 'XUID'}:</strong> ${mcid}
+      <strong style="color:rgb(214, 214, 214);">User ID:</strong> ${uid}
+    </div>
+  </div>
+`;
+
+
+    downloadBtn.style.display = "inline-block";
+    downloadBtn.dataset.textureId = textureId;
+
+    topbar.style.display = "flex";
+    mainLayout.style.display = "flex";
+    searchInitial.style.display = "none";
+
+    let metaDesc = document.querySelector("meta[name='description']");
+    if (!metaDesc) {
+      metaDesc = document.createElement("meta");
+      metaDesc.name = "description";
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = `${username}'s profile on Minecraft Skin Finder\n${description}`;
+    document.title = `${username} | ReeGuy's Projects`;
+
+    localStorage.setItem('lastUsername', username);
+
+    playSuccessSound();
+    playSearchCompleteSound();
   } catch {
     errorMessage.textContent = `User might not exist, or failed to load.`;
     playErrorSound();
   } finally {
+    loadingSpinner.style.display = "none";
     usernameInput.disabled = false;
+    downloadBtn.disabled = false;
   }
+}
+
+function downloadSkin(textureId) {
+  const downloadUrl = `https://mc-heads.net/download/${textureId}`;
+  const link = document.createElement('a');
+  link.href = downloadUrl;
+  link.download = `${textureId}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 document.getElementById("downloadBtn").addEventListener("click", () => {
