@@ -8,10 +8,6 @@ const sounds = {
   hover: new Audio(`${soundsPath}se_ui_common_select_showdetail.wav`),
   error: new Audio(`${soundsPath}se_ui_common_select_pagemove.wav`),
   success: new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
-  completeSearchOptions: [
-    new Audio(`${soundsPath}se_ui_common_goodbtn04.wav`),
-    new Audio(`${soundsPath}se_ui_common_decide07.wav`)
-  ]
 };
 
 function playSound(sound) {
@@ -24,10 +20,7 @@ const playSuccessSound = () => playSound(sounds.success);
 const playClickSound = () => playSound(sounds.click);
 const playHoverSound = () => playSound(sounds.hover);
 const playErrorSound = () => playSound(sounds.error);
-function playSearchCompleteSound() {
-  const sound = sounds.completeSearchOptions[Math.floor(Math.random() * sounds.completeSearchOptions.length)];
-  playSound(sound);
-}
+
 
 function getAverageColor(img) {
   const canvas = document.createElement('canvas');
