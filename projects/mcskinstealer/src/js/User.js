@@ -1,5 +1,6 @@
 let currentEdition = "mcpe";
 let previousSkins = [];
+let modalOpen = false;
 let makethiswebsitebetter = false;
 
 const soundsPath = '../mcskinstealer/src/sound/';
@@ -14,6 +15,18 @@ const sounds = {
   ]
 };
 
+function toggleSound(enable) {
+  makethiswebsitebetter = enable;
+  if (enable) {
+    document.body.addEventListener('click', () => {
+      Object.values(sounds).forEach(sound => {
+        if (Array.isArray(sound)) sound.forEach(s => s.play().catch(() => {}));
+        else sound.play().catch(() => {});
+      });
+    }, { once: true });
+  }
+}
+
 function playSound(sound) {
   if (!makethiswebsitebetter) return;
   sound.currentTime = 0;
@@ -27,6 +40,12 @@ const playErrorSound = () => playSound(sounds.error);
 function playSearchCompleteSound() {
   const sound = sounds.completeSearchOptions[Math.floor(Math.random() * sounds.completeSearchOptions.length)];
   playSound(sound);
+}
+
+function updateEditionButton() {
+  const btn = document.getElementById('editionToggle');
+  btn.textContent = `Edition: ${currentEdition === 'java' ? 'Java' : 'Bedrock'} Edition`;
+  btn.title = `Click to switch edition (current: ${currentEdition === 'java' ? 'Java' : 'Bedrock'})`;
 }
 
 function getAverageColor(img) {
@@ -102,25 +121,36 @@ function renderPreviousSkins() {
   });
 }
 
-async function fetchAndRenderUser() {
-  const params = new URLSearchParams(window.location.search);
-  const username = params.get("username");
-  const edition = params.get("edition");
-  if (edition && (edition === "java" || edition === "mcpe")) {
-    currentEdition = edition;
-  }
-  if (!username) return;
+async function fetchSkin(usernameFromParam = null) {
+  const usernameInput = document.getElementById('usernameInput');
+  const errorMessage = document.getElementById('errorMessage');
   const skinPreview = document.getElementById('skinPreview');
   const userDetails = document.getElementById('userDetails');
   const downloadBtn = document.getElementById('downloadBtn');
   const loadingSpinner = document.getElementById('loadingSpinner');
+  const topbar = document.getElementById('topbar');
+  const mainLayout = document.getElementById('mainLayout');
+  const searchInitial = document.getElementById('searchInitial');
+  const inputValue = usernameFromParam || usernameInput.value.trim();
+  if (!inputValue) {
+    errorMessage.textContent = "Please enter a valid username!";
+    playErrorSound();
+    return;
+  }
+  usernameInput.disabled = true;
+  downloadBtn.disabled = true;
+  errorMessage.textContent = "";
   loadingSpinner.style.display = "block";
   try {
-    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app///${encodeURIComponent(username)}?edition=${currentEdition}`;
+    const url = new URL(window.location);
+    url.searchParams.set("username", inputValue);
+    url.searchParams.set("edition", currentEdition);
+    window.history.replaceState({}, '', url);
+    const apiUrl = `https://tolerant-destined-mosquito.ngrok-free.app///${encodeURIComponent(inputValue)}?edition=${currentEdition}`;
     const response = await fetch(apiUrl, { headers: { 'ngrok-skip-browser-warning': 'true' } });
     if (!response.ok) throw new Error("Network response not OK");
     const data = await response.json();
-    const { texture_id: textureId, uuid, xuid, username: uname, uid, description = "No bio given.", previous_skins = [], isSlim } = data;
+    const { texture_id: textureId, uuid, xuid, username, uid, description = "No bio given.", previous_skins = [], isSlim } = data;
     const mcid = uuid || xuid;
     if (!textureId || !mcid) throw new Error("Invalid or incomplete data received.");
     const skinUrl = `https://vzge.me/full/310/${textureId}.png?no=shadow${isSlim ? "&slim=true" : ""}`;
@@ -132,7 +162,7 @@ async function fetchAndRenderUser() {
         previousSkins.push({
           textureId: id,
           skinUrl: `https://vzge.me/full/310/${id}.png?no=shadow`,
-          username: uname,
+          username,
           description,
           mcid
         });
@@ -150,19 +180,24 @@ async function fetchAndRenderUser() {
       skinPreview.style.opacity = 1;
     };
 
-    userDetails.innerHTML = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
-        <h2 style="margin: 0 0 0.4rem; font-size: 1.8rem; font-weight: 700; color:rgb(255, 255, 255);">${uname}</h2>
-        <p style="margin: 0 0 0.5rem; font-size: 1rem; line-height: 0.5; color: #ccc;">${description}</p>
-        <div style="font-size: 0.9rem">
-          <strong style="color:rgb(214, 214, 214);">${currentEdition === 'java' ? 'UUID' : 'XUID'}:</strong> ${mcid}
-          <strong style="color:rgb(214, 214, 214);">User ID:</strong> ${uid}
-        </div>
-      </div>
-    `;
+userDetails.innerHTML = `
+  <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">
+    <h2 style="margin: 0 0 0.4rem; font-size: 1.8rem; font-weight: 700; color:rgb(255, 255, 255);">${username}</h2>
+    <p style="margin: 0 0 0.5rem; font-size: 1rem; line-height: 0.5; color: #ccc;">${description}</p>
+    <div style="font-size: 0.9rem">
+      <strong style="color:rgb(214, 214, 214);">${currentEdition === 'java' ? 'UUID' : 'XUID'}:</strong> ${mcid}
+      <strong style="color:rgb(214, 214, 214);">User ID:</strong> ${uid}
+    </div>
+  </div>
+`;
+
 
     downloadBtn.style.display = "inline-block";
     downloadBtn.dataset.textureId = textureId;
+
+    topbar.style.display = "flex";
+    mainLayout.style.display = "flex";
+    searchInitial.style.display = "none";
 
     let metaDesc = document.querySelector("meta[name='description']");
     if (!metaDesc) {
@@ -170,16 +205,20 @@ async function fetchAndRenderUser() {
       metaDesc.name = "description";
       document.head.appendChild(metaDesc);
     }
-    metaDesc.content = `${uname}'s User on Minecraft Skin Finder\n${description}`;
-    document.title = `${uname} | ReeGuy's Projects`;
+    metaDesc.content = `${username}'s profile on Minecraft Skin Finder\n${description}`;
+    document.title = `${username} | ReeGuy's Projects`;
+
+    localStorage.setItem('lastUsername', username);
 
     playSuccessSound();
     playSearchCompleteSound();
   } catch {
-    userDetails.textContent = `User might not exist, or failed to load.`;
+    errorMessage.textContent = `User might not exist, or failed to load.`;
     playErrorSound();
   } finally {
     loadingSpinner.style.display = "none";
+    usernameInput.disabled = false;
+    downloadBtn.disabled = false;
   }
 }
 
@@ -199,4 +238,57 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
   if (textureId) downloadSkin(textureId);
 });
 
-window.onload = fetchAndRenderUser;
+const editionToggleBtn = document.getElementById('editionToggle');
+editionToggleBtn.addEventListener('click', () => {
+  playClickSound();
+  currentEdition = currentEdition === 'mcpe' ? 'java' : 'mcpe';
+  updateEditionButton();
+  const username = document.getElementById('usernameInput').value.trim();
+  if (username) fetchSkin(username);
+});
+
+editionToggleBtn.addEventListener('mouseenter', () => playHoverSound());
+editionToggleBtn.addEventListener('focus', () => playClickSound());
+editionToggleBtn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    editionToggleBtn.click();
+  }
+});
+
+const usernameInput = document.getElementById('usernameInput');
+usernameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') fetchSkin();
+  const errorMessage = document.getElementById('errorMessage');
+  if (errorMessage.textContent) errorMessage.textContent = "";
+});
+usernameInput.addEventListener('focus', () => playClickSound());
+usernameInput.addEventListener('mouseenter', () => playHoverSound());
+
+const soundToggle = document.getElementById('soundToggle');
+if (soundToggle) {
+  soundToggle.title = "Toggle sounds on/off";
+  soundToggle.addEventListener('click', () => {
+    toggleSound(!makethiswebsitebetter);
+    playClickSound();
+    soundToggle.textContent = makethiswebsitebetter ? "🔊 Sound ON" : "🔇 Sound OFF";
+  });
+  soundToggle.addEventListener('mouseenter', () => playHoverSound());
+}
+
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const editionParam = params.get("edition");
+  const usernameParam = params.get("username");
+  if (editionParam && (editionParam === "java" || editionParam === "mcpe")) {
+    currentEdition = editionParam;
+  }
+  updateEditionButton();
+  const lastUsername = localStorage.getItem('lastUsername');
+  if (usernameParam) {
+    usernameInput.value = usernameParam;
+    fetchSkin(usernameParam);
+  } else if (lastUsername) {
+    usernameInput.value = lastUsername;
+  }
+};
