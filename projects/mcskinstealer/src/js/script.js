@@ -110,7 +110,7 @@ async function fetchSkin(usernameFromParam = null) {
     url.searchParams.set("username", inputValue);
     url.searchParams.set("edition", currentEdition);
     window.history.replaceState({}, '', url);
-    window.location.href = `projects/mcskinstealer/User/?username=${encodeURIComponent(inputValue)}&edition=${currentEdition}`;
+    window.location.href = `User/?username=${encodeURIComponent(inputValue)}&edition=${currentEdition}`;
   } catch {
     errorMessage.textContent = `User might not exist, or failed to load.`;
     playErrorSound();
