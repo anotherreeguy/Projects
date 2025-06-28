@@ -13,10 +13,10 @@
 </head>
 <body>
     <div class="hero">
-        <h1>ReeGuy's Projects</h1>        
+        <h1>ReeGuys Projects</h1>
     </div>
     <div class="container">
-        <p>project here</p>
+        <p id="splash-text">project here</p>
         <div class="button-grid">
             <a href="projects/mcskinstealer/" class="btn">
                 <img src="src/Banner-1-thumbsmall.png" alt="Minecraft Skin finder, picture shows Minecraft terrain generation in the background with the text 'SKIN FINDER'!">
@@ -29,5 +29,14 @@
             </a>
         </div>
     </div>
+<script>
+    const Splash = [
+        "Heres some projects!",
+        "Projects here!",
+        "I should probably sleep right now."
+    ];
+    const splash = Splash[Math.floor(Math.random() * Splash.length)];
+    document.getElementById('splash-text').textContent = splash;
+</script>
 </body>
 </html>
