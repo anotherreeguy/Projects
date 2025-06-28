@@ -13,15 +13,13 @@
 Minecraft skin finder is a website that lets you find Minecraft Bedrock and Java profiles, you can find things such as:
 Username,
 XUID/UUID,
-a [description](https://github.com/anotherreeguy/Projects/wiki/Minecraft-Skin-Finder#how-to-add-a-custom-description) could be added via emailing `contact@reeguy.com`.
+a [description](https://github.com/anotherreeguy/Projects/wiki/Minecraft-Skin-Finder#how-to-add-a-custom-description/) could be added via emailing `contact@reeguy.com`.
 
 <sub>(make sure you include username and description of choice)</sub>
 
 <h2 align="center">Youtube thumbnail downloader!</h2>
 This website features a way to *download* Youtube thumbnails, you can download an thumbnail by:
-/n
 Finding the video of questions link, then afterwards inputting it to the search box on the website.
-/n
 After that, you would be able to see the Youtube thumbnail of question which you may download (*using the download button*).
 
 <h2 align="center">Random server finder!</h2>
