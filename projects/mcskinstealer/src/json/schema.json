@@ -1,0 +1,17 @@
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": "Minecraft Skins",
+                    "url": "https://projects.reeguy.com/minecraft-skin-finder",
+                    "description": "Find and download Minecraft Bedrock skins instantly!",
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "ReeGuy Projects",
+                        "url": "https://projects.reeguy.com"
+                    },
+                    "potentialAction": {
+                        "@type": "SearchAction",
+                        "target": "https://projects.reeguy.com/minecraft-skin-finder?username={search_term_string}",
+                        "query-input": "required name=search_term_string"
+                    }
+                }

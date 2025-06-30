@@ -1,0 +1,1 @@
+tailwind.config={darkMode:"class",theme:{extend:{fontFamily:{sans:["Inter","Montserrat","sans-serif"]},colors:{darkbg:"#121212",topbarbg:"#1f1f1f",primary:"#4f46e5",hover:"#3730a3",inputBorder:"#444"}}}};
