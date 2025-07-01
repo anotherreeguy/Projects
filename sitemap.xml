@@ -1,0 +1,22 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+<loc>https://projects.reeguy.com/</loc>
+<lastmod>2025-07-01T14:45:47+00:00</lastmod>
+<priority>1.00</priority>
+</url>
+<url>
+<loc>https://projects.reeguy.com/projects/mcskinstealer/</loc>
+<lastmod>2025-07-01T14:45:47+00:00</lastmod>
+<priority>0.80</priority>
+</url>
+<url>
+<loc>https://projects.reeguy.com/projects/ytthumbdownloader/</loc>
+<lastmod>2025-07-01T14:45:47+00:00</lastmod>
+<priority>0.80</priority>
+</url>
+<url>
+<loc>https://projects.reeguy.com/projects/mcserverfinder/</loc>
+<lastmod>2025-07-01T14:45:47+00:00</lastmod>
+<priority>0.80</priority>
+</url>
+</urlset>
