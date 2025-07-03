@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     let typedText = "";
-    const triggerWord = "en";
-    let triggered = false;
+    let h = false;
     document.addEventListener("keydown", (e) => {
-        if (triggered) return;
+        if (h) return;
         typedText += e.key.toLowerCase();
-        if (typedText.length > triggerWord.length) {
-            typedText = typedText.slice(-triggerWord.length);
+        if (typedText.length > "en".length) {
+            typedText = typedText.slice(-"en".length);
         }
-        if (typedText === triggerWord) {
-            triggered = true;
+        if (typedText === "en") {
+            h = true;
             const targetImage = document.querySelector(".button-grid a:first-child img");
             if (targetImage) {
                 targetImage.src = "src/Banner-1-thumbbig.png";
